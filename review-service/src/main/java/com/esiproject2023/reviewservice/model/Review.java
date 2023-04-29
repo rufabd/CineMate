@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name="reviews")
+@Table(name="review")
 @Data
 @Builder
 @NoArgsConstructor
@@ -12,9 +12,18 @@ import lombok.*;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
-    private Integer user_id;
-    private String content_id;
+
+    @Column(name = "userId", nullable = false)
+    private Long userId;
+
+    @Column(name = "contentId", nullable = false)
+    private String contentId;
+
+    @Column(name = "body", nullable = true)
     private String body;
+
+    @Column(name = "score", nullable = false)
     private Double score;
 }

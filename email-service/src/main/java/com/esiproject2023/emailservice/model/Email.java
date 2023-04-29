@@ -9,19 +9,29 @@ import lombok.NoArgsConstructor;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name="emails")
+@Table(name = "email")
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Email {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
+
+    @Column(name = "userEmail", nullable = false)
     private String user_email;
+
+    @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "subject", nullable = false)
     private String subject;
+
+    @Column(name = "content", nullable = false)
     private String content;
-    @Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+
+    @Column(name = "created", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp timestamp;
 }

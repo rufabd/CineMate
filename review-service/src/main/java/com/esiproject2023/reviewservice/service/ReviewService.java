@@ -30,8 +30,8 @@ public class ReviewService {
 //    }
     public ReviewDto createReview(ReviewDto reviewDto) {
         Review review = Review.builder()
-                .user_id(reviewDto.getUser_id())
-                .content_id(reviewDto.getContent_id())
+                .userId(reviewDto.getUserId())
+                .contentId(reviewDto.getContentId())
                 .body(reviewDto.getBody())
                 .score(reviewDto.getScore())
                 .build();
@@ -48,8 +48,8 @@ public class ReviewService {
     public ReviewDto mapToReviewDto(Review review) {
         return ReviewDto.builder()
                 .id(review.getId())
-                .user_id(review.getUser_id())
-                .content_id(review.getContent_id())
+                .userId(review.getUserId())
+                .contentId(review.getContentId())
                 .body(review.getBody())
                 .score(review.getScore())
                 .build();
