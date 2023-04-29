@@ -56,7 +56,7 @@ public class DataService {
         List<Metadata> metadataList = new ArrayList<>();
         for (int i = 0; i < results.size(); i++) {
             JsonObject result = results.get(i).getAsJsonObject();
-//            String id = result.get("id").getAsString();
+            String id = result.get("id").getAsString();
             boolean titleTextExist = !result.getAsJsonObject("titleText").get("text").isJsonNull();
             String titleText = titleTextExist ? result.getAsJsonObject("titleText").get("text").getAsString() : "";
             boolean ratingCheck = result.getAsJsonObject("ratingsSummary")
@@ -110,7 +110,7 @@ public class DataService {
             boolean directorsExist = (result.getAsJsonArray("directors").size()) > 0;
             String director = directorsExist ? result.getAsJsonArray("directors").get(0).getAsJsonObject().getAsJsonArray("credits").get(0).getAsJsonObject().getAsJsonObject("name").getAsJsonObject("nameText").get("text").getAsString() : "not found";
 
-            Metadata metadata = new Metadata(titleText, rating, allCasts.toString(), description, allGenres.toString(), imageURL, releaseDate, director); //, genre, releaseDate, organization, awards.toArray(new String[0])
+            Metadata metadata = new Metadata(id, titleText, rating, allCasts.toString(), description, allGenres.toString(), imageURL, releaseDate, director); //, genre, releaseDate, organization, awards.toArray(new String[0])
             metadataList.add(metadata);
         }
         return metadataList.toArray(new Metadata[0]);

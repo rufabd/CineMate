@@ -9,12 +9,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="metadata-service" />
         <module name="review-service" />
+        <module name="discovery-service" />
         <module name="email-service" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="discovery-service" options="-parameters" />
       <module name="email-service" options="-parameters" />
       <module name="metadata-service" options="-parameters" />
       <module name="review-service" options="-parameters" />
