@@ -1,0 +1,4 @@
+com\esiproject2023\metadataservice\service\DataService.class
+com\esiproject2023\metadataservice\controller\DataController.class
+com\esiproject2023\metadataservice\MetadataServiceApplication.class
+com\esiproject2023\metadataservice\model\Metadata.class
