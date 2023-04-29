@@ -29,7 +29,7 @@ public class DataService {
 
     public String getResponseWithParams(String params) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(API_URL + "?" + params))
+                .uri(URI.create(API_URL + params))
                 .header("content-type", contentType)
                 .header("X-RapidAPI-Key", API_Key)
                 .header("X-RapidAPI-Host", API_Host)
