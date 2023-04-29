@@ -19,6 +19,7 @@
         <module>metadata-service</module>
         <module>email-service</module>
         <module>discovery-service</module>
+        <module>watchlist-service</module>
     </modules>
 
     <properties>

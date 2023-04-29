@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="watchlist-service" />
         <module name="metadata-service" />
         <module name="review-service" />
         <module name="discovery-service" />
@@ -20,6 +21,7 @@
       <module name="email-service" options="-parameters" />
       <module name="metadata-service" options="-parameters" />
       <module name="review-service" options="-parameters" />
+      <module name="watchlist-service" options="-parameters" />
     </option>
   </component>
 </project>
