@@ -9,5 +9,4 @@ public class WatchlistServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WatchlistServiceApplication.class, args);
 	}
-
 }
