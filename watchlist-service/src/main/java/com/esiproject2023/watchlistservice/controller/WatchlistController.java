@@ -1,5 +1,6 @@
 package com.esiproject2023.watchlistservice.controller;
 
+import com.esiproject2023.watchlistservice.dto.MetadataResponse;
 import com.esiproject2023.watchlistservice.dto.WatchlistItemDto;
 import com.esiproject2023.watchlistservice.service.WatchlistService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,13 @@ public class WatchlistController {
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<WatchlistItemDto> getUserWatchlist(@PathVariable Long userId) {
+    public List<MetadataResponse> getUserWatchlist(@PathVariable Long userId) {
         return watchlistService.getWatchListForUser(userId);
     }
 
     @DeleteMapping("/{userId}/delete/{contentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFromWatchlist(@PathVariable Long userId, @PathVariable String contentId) {
-        watchlistService.removeMovieFromWatchlist(userId, contentId);
+        watchlistService.removeContentFromWatchlist(userId, contentId);
     }
 }
