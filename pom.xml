@@ -20,6 +20,7 @@
         <module>email-service</module>
         <module>discovery-service</module>
         <module>watchlist-service</module>
+        <module>discovery-server</module>
     </modules>
 
     <properties>
@@ -44,5 +45,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2022.0.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
