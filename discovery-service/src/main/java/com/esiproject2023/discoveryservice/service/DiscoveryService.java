@@ -2,14 +2,24 @@ package com.esiproject2023.discoveryservice.service;
 
 import com.esiproject2023.discoveryservice.model.Content;
 import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
 
 @Service
 public class DiscoveryService {
+
+    private final WebClient webClient;
+
+    @Autowired
+    public DiscoveryService(WebClient webClient) {
+        this.webClient = webClient;
+    }
+
     public Content[] processResponse(String params) {
-        String[] allParams = params.split("\\|");
+        String[] allParams = params.split(",");
         String userDateOfBirth = allParams[0];
         String favGenre = allParams[1];
         String ratingLimit = allParams[2];
@@ -17,21 +27,24 @@ public class DiscoveryService {
         String top_rated_250 = createConfig("", favGenre, "top_rated_250", "", "", "", "", "");
         String top_rated_series_250 = createConfig("", favGenre, "top_rated_series_250", "", "", "", "", "");
 
-        String response1 = "";//KAFKA (top_rated_250)
-        String response2 = "";//KAFKA (top_rated_series_250)
+
+        String response1 = webClient.get().uri("http://localhost:8085/searchBy/" + top_rated_250).retrieve().bodyToMono(String.class).block();
+        String response2 = webClient.get().uri("http://localhost:8085/searchBy/" + top_rated_series_250).retrieve().bodyToMono(String.class).block();
+
+        System.out.println(response2);
 
         List<Content> content1 = new ArrayList<>();
         List<Content> content2 = new ArrayList<>();
 
-        Map<String, String>[] maps1 = new Gson().fromJson(response1, Map[].class);
-        Map<String, String>[] maps2 = new Gson().fromJson(response2, Map[].class);
+        Map[] maps1 = new Gson().fromJson(response1, Map[].class);
+        Map[] maps2 = new Gson().fromJson(response2, Map[].class);
 
-        for (Map<String, String> map : maps1) {
+        for (Map map : maps1) {
             //FILTERS HERE (userDateOfBirth + ratingLimit + NOT FOUND REMOVED) remove: musicVideo,podcastEpisode,podcastSeries,videoGame,video
             content1.add(new Content(map));
         }
 
-        for (Map<String, String> map : maps2) {
+        for (Map map : maps2) {
             //FILTERS HERE (userDateOfBirth + ratingLimit + NOT FOUND REMOVED) remove: musicVideo,podcastEpisode,podcastSeries,videoGame,video
             content2.add(new Content(map));
         }
@@ -40,12 +53,7 @@ public class DiscoveryService {
         contents.addAll(content2);
 
         // Sort the contents by rating
-        Collections.sort(contents, new Comparator<Content>() {
-            @Override
-            public int compare(Content c1, Content c2) {
-                return (int) (c2.getRating() * 100 - c1.getRating() * 100);
-            }
-        });
+        contents.sort((c1, c2) -> (int) (c2.getRating() * 100 - c1.getRating() * 100));
 
         // Get the top 10 contents
         Content[] top10Contents = new Content[10];
@@ -74,8 +82,6 @@ public class DiscoveryService {
             if (!entry.getValue().equals("")) {
                 if (queryStringBuilder.length() > 0) {
                     queryStringBuilder.append("&");
-                } else {
-                    queryStringBuilder.append("?");
                 }
                 queryStringBuilder.append(entry.getKey()).append("=").append(entry.getValue());
             }
