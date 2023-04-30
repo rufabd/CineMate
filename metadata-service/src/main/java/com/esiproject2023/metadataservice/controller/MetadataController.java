@@ -18,36 +18,35 @@ public class MetadataController {
         this.dataService = dataService;
     }
 
-    @GetMapping("/searchBy/{params}")
+    @GetMapping("/search")
+    public ResponseEntity<Metadata[]> getAllMetadata() {
+        try {
+            String response = dataService.getResponse();
+            Metadata[] allMetadata = dataService.processResponse(response);
+            return ResponseEntity.ok(allMetadata);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/searchByParams/{params}")
     public ResponseEntity<Metadata[]> getRequiredMetadata(@PathVariable String params) {
         try {
             String response = dataService.getResponseWithParams(params);
             Metadata[] allMetadata = dataService.processResponse(response);
             return ResponseEntity.ok(allMetadata);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
-    @GetMapping("/search")
-    public ResponseEntity<Metadata[]> getAllMetadata() {
+
+    @GetMapping("/searchByIDs/{ids}")
+    public ResponseEntity<Metadata[]> getAllMetadataByIDs(@PathVariable String ids) {
         try {
-            String response = dataService.getResponse();
+            String response = dataService.getResponseWithIDs(ids);
             Metadata[] allMetadata = dataService.processResponse(response);
             return ResponseEntity.ok(allMetadata);
-        }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-    @GetMapping("/search")
-    public ResponseEntity<Metadata[]> getAllMetadata() {
-        try {
-            String response = dataService.getResponse();
-            Metadata[] allMetadata = dataService.processResponse(response);
-            return ResponseEntity.ok(allMetadata);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }

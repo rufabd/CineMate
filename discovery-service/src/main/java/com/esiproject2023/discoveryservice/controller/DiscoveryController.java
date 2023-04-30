@@ -36,6 +36,7 @@ public class DiscoveryController {
             Content[] top10Content = discoveryService.processResponse(params);
             return ResponseEntity.ok(top10Content);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }

@@ -14,6 +14,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,29 @@ public class MetadataService {
     public String getResponseWithParams(String params) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_URL + "?" + params))
+                .header("content-type", contentType)
+                .header("X-RapidAPI-Key", API_Key)
+                .header("X-RapidAPI-Host", API_Host)
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        return response.body();
+    }
+    public String getResponseWithIDs(String ids) throws Exception {
+       StringBuilder params = new StringBuilder();
+       params.append("/x/titles-by-ids?idsList=");
+        for (String ID : ids.split(",")) {
+            if (!ID.equals("")) {
+                if (params.length() > 0) {
+                    params.append("%2C");
+                }
+                params.append(ID);
+            }
+        }
+        params.append("&info=custom_info");
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(API_URL + params))
                 .header("content-type", contentType)
                 .header("X-RapidAPI-Key", API_Key)
                 .header("X-RapidAPI-Host", API_Host)

@@ -1,10 +1,14 @@
 package com.esiproject2023.discoveryservice.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
 @NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Content {
     private String id;
     private String title;
@@ -15,20 +19,4 @@ public class Content {
     private String poster;
     private String release_date;
     private String director;
-
-    public Content(Map<String,String> obj) {
-        this.id = obj.get("id");
-        this.title = obj.get("title");
-        this.rating = Double.parseDouble(obj.get("rating"));
-        this.cast = obj.get("cast");
-        this.description = obj.get("description");
-        this.genre = obj.get("genre");
-        this.poster = obj.get("poster");
-        this.release_date = obj.get("release_date");
-        this.director = obj.get("director");
-    }
-
-    public double getRating() {
-        return rating;
-    }
 }
