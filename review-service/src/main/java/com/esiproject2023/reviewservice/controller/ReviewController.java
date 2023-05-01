@@ -1,6 +1,7 @@
 package com.esiproject2023.reviewservice.controller;
 
 import com.esiproject2023.reviewservice.dto.ReviewDto;
+import com.esiproject2023.reviewservice.model.Review;
 import com.esiproject2023.reviewservice.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,5 +39,11 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReview(@PathVariable Long id) {
         reviewService.deleteReview(id);
+    }
+
+    @GetMapping("/content/{contentId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Review> getUserWatchlist(@PathVariable String contentId) {
+        return reviewService.getReviewsForSpecificContent(contentId);
     }
 }

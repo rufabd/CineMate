@@ -77,6 +77,10 @@ public class ReviewService {
         return review.map(this::mapToReviewDto);
     }
 
+    public List<Review> getReviewsForSpecificContent(String contentId) {
+        return reviewRepository.findByContentId(contentId);
+    }
+
     public void deleteReview(Long id) {
         Optional<Review> reviewToBeDeleted = reviewRepository.findById(id);
         String contentIdForDeletedReview = reviewToBeDeleted.get().getContentId();
