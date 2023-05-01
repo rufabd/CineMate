@@ -19,7 +19,8 @@ public class WatchlistService {
     @Autowired
     private WatchlistRepository watchlistRepository;
 
-    WebClient.Builder webClient;
+    @Autowired
+    private WebClient.Builder webClient;
     public WatchlistItemDto addWatchlist(WatchlistItemDto watchlistItemDto) {
         WatchlistItem watchlistItem = WatchlistItem.builder()
                 .userId(watchlistItemDto.getUserId())

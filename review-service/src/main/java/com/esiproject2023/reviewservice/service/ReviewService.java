@@ -90,7 +90,7 @@ public class ReviewService {
             if(response != null) {
                 //           Dynamic email here, once User Auth is done.
                 EmailRequest emailRequest = new EmailRequest(
-                        "rufatabdullayev029@gmail.com",
+                        "muradkhasmammadov@gmail.com",
                         "We have deleted your review!", "Your review has been deleted",
                         "We have deleted your review for the content " + "'" + response[0].getTitle() + "'" + ", as it was containing inappropriate content which was against our policy regarding" +
                                 " adding reviews/ratings for the content. We always try to keep our platform safe and friendly for everyone.\n\n" +
