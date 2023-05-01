@@ -29,8 +29,18 @@ public class MetadataService {
     private String API_Host;
 
     public String getResponseWithParams(String params) throws Exception {
+        StringBuilder restUrl = new StringBuilder();
+        restUrl.append(API_URL);
+        if (params.contains("AKA")) {
+            restUrl.append("/search/title/");
+            restUrl.append(params.substring(3));
+
+        } else restUrl.append("?").append(params);
+
+        System.out.println(restUrl);
+
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(API_URL + "?" + params))
+                .uri(URI.create(restUrl.toString()))
                 .header("content-type", contentType)
                 .header("X-RapidAPI-Key", API_Key)
                 .header("X-RapidAPI-Host", API_Host)
@@ -39,9 +49,34 @@ public class MetadataService {
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
     }
+
     public String getResponseWithIDs(String ids) throws Exception {
-       StringBuilder params = new StringBuilder();
-       params.append("/x/titles-by-ids?idsList=");
+        StringBuilder params = new StringBuilder();
+        params.append("/x/titles-by-ids?idsList=");
+        for (String ID : ids.split(",")) {
+            if (!ID.equals("")) {
+                if (params.length() > 0) {
+                    params.append("%2C");
+                }
+                params.append(ID);
+            }
+        }
+        params.append("&info=custom_info");
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(API_URL + params))
+                .header("content-type", contentType)
+                .header("X-RapidAPI-Key", API_Key)
+                .header("X-RapidAPI-Host", API_Host)
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        return response.body();
+    }
+
+    public String getReviewByID(String ids) throws Exception {
+        StringBuilder params = new StringBuilder();
+        params.append("/x/titles-by-ids?idsList=");
         for (String ID : ids.split(",")) {
             if (!ID.equals("")) {
                 if (params.length() > 0) {
@@ -97,7 +132,7 @@ public class MetadataService {
                     result.getAsJsonObject("plot").getAsJsonObject("plotText").get("plainText").getAsString()
                     : "";
 
-            boolean castExist = (result.getAsJsonArray("principalCast").size()) > 0;
+            boolean castExist = result.get("principalCast") != null && (result.getAsJsonArray("principalCast").size()) > 0;
             JsonArray casts = castExist ? result.getAsJsonArray("principalCast").get(0).getAsJsonObject().getAsJsonArray("credits") : new JsonArray();
             StringBuilder allCasts = new StringBuilder();
 

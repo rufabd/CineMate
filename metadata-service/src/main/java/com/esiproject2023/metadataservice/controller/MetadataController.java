@@ -2,6 +2,7 @@ package com.esiproject2023.metadataservice.controller;
 
 import com.esiproject2023.metadataservice.model.Metadata;
 import com.esiproject2023.metadataservice.service.MetadataService;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class MetadataController {
             Metadata[] allMetadata = dataService.processResponse(response);
             return ResponseEntity.ok(allMetadata);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
@@ -38,6 +40,7 @@ public class MetadataController {
             Metadata[] allMetadata = dataService.processResponse(response);
             return ResponseEntity.ok(allMetadata);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
@@ -48,6 +51,19 @@ public class MetadataController {
             String response = dataService.getResponseWithIDs(ids);
             Metadata[] allMetadata = dataService.processResponse(response);
             return ResponseEntity.ok(allMetadata);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    @GetMapping("/searchByID/{id}")
+    public ResponseEntity<String> getMetadataAndRatingByID(@PathVariable String id) {
+        try {
+            Gson gson = new Gson();
+            String metadata = dataService.getResponseWithIDs(id);
+            String reviews = dataService.getReviewByID(id);
+            Metadata allMetadata = dataService.processResponse(metadata)[0];
+
+            return ResponseEntity.ok(gson.toJson(allMetadata + reviews));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
