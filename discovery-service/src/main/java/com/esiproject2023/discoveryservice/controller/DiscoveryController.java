@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/discovery")
 public class DiscoveryController {
     private final DiscoveryService discoveryService;
 
@@ -24,7 +24,7 @@ public class DiscoveryController {
         this.discoveryService = discoveryService;
     }
 
-    @GetMapping("/discovery/search/{params}") //search section
+    @GetMapping("/search/{params}") //search section
     public ResponseEntity<Content[]> getDiscoveryDataBySearch(@PathVariable String params) {
         //searchedTitle
         /// add "/search/akas/TITLENAME"
@@ -32,7 +32,7 @@ public class DiscoveryController {
         return ResponseEntity.ok(new Content[0]);
     }
 
-    @GetMapping("/discovery/{params}") //FOR YOU
+    @GetMapping("/{params}") //FOR YOU
     public ResponseEntity<Content[]> getDiscoveryData(@PathVariable String params) {
         try {
             Content[] top10Content = discoveryService.processResponse(params);

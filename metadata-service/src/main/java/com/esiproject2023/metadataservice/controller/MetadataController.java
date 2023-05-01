@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@RequestMapping("/metadata")
 public class MetadataController {
     private final MetadataService dataService;
 
@@ -19,7 +20,7 @@ public class MetadataController {
         this.dataService = dataService;
     }
 
-    @GetMapping("/metadata/search")
+    @GetMapping("/search")
     public ResponseEntity<Metadata[]> getAllMetadata() {
         try {
             String response = dataService.getResponse();
@@ -30,7 +31,7 @@ public class MetadataController {
         }
     }
 
-    @GetMapping("/metadata/searchByParams/{params}")
+    @GetMapping("/searchByParams/{params}")
     public ResponseEntity<Metadata[]> getRequiredMetadata(@PathVariable String params) {
         try {
             String response = dataService.getResponseWithParams(params);
