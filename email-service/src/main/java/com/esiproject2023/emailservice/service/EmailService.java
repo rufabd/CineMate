@@ -32,11 +32,13 @@ public class EmailService {
         message.setText(email.getTitle() + "\n\n" + email.getContent());
         message.setSubject(email.getSubject());
         mailSender.send(message);
+
+//        Null check here. It doesn't save email yet, because of the null exception.
+        System.out.println(email);
         Email result = emailRepository.save(email);
+
         log.info("Email with id of {} sent successfully...", email.getId());
         return mapToEmailDto(result);
-
-//        Email result = emailRepository.save()
     }
 
     public EmailDto mapToEmailDto(Email email) {

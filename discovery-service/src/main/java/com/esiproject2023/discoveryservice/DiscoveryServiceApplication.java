@@ -9,7 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class DiscoveryServiceApplication {
+public class
+
+DiscoveryServiceApplication {
 	@LoadBalanced
 	@Bean
 	public WebClient.Builder webClient() {
