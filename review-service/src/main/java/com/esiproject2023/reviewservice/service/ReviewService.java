@@ -12,6 +12,7 @@ import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Meta;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -28,6 +29,9 @@ public class ReviewService {
 
     @Autowired
     private WebClient.Builder webClient;
+
+    private final KafkaTemplate<String, EmailRequest> kafkaTemplate;
+
     public ReviewDto createReview(ReviewDto reviewDto) {
         Review review = Review.builder()
                 .userId(reviewDto.getUserId())
@@ -43,12 +47,11 @@ public class ReviewService {
                 "\nYou have recently added review/rating to the content " + response[0].getTitle() + "\n\nWe really apprecieate your time spent for making CineMate" +
                         " better place for entertainment industry!\n\nSincerely,\nTeam CineMate!");
         Review result = reviewRepository.save(review);
+        kafkaTemplate.send("emailTopic", emailRequest);
 
-//        Send data to Email Service once u implemented Kafka.
 //        webClient.build().post().uri("http://email-service/email/send").body(Mono.just(emailRequest), EmailRequest.class).exchangeToMono(emailResponse -> Mono.just(emailResponse.statusCode())).block();
 
-//        Request sent asynchronously
-        webClient.build().post().uri("http://email-service/email/send").body(Mono.just(emailRequest), EmailRequest.class).retrieve().bodyToMono(EmailRequest.class).subscribe();
+//        webClient.build().post().uri("http://email-service/email/send").body(Mono.just(emailRequest), EmailRequest.class).retrieve().bodyToMono(EmailRequest.class).subscribe();
 
         log.info("The review with id {} is added", review.getId());
         return mapToReviewDto(result);
@@ -90,7 +93,7 @@ public class ReviewService {
                                 "Unfortunately, we will have to ban you from the platform in case of repetition of such case.\n\n" +
                                 "Thank you for your understanding and cooperation.\n\n"+ "Your deleted review for the content was like:\n" + "'" + reviewToBeDeleted.get().getBody() + "'" +
                                 "\n\nSincerely,\nTeam CineMate!");
-                webClient.build().post().uri("http://email-service/email/send").body(Mono.just(emailRequest), EmailRequest.class).retrieve().bodyToMono(EmailRequest.class).subscribe();
+                kafkaTemplate.send("emailTopic", emailRequest);
             }
         }
         reviewRepository.deleteById(id);

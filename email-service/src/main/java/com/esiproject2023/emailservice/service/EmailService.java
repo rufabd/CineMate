@@ -6,6 +6,7 @@ import com.esiproject2023.emailservice.repository.EmailRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class EmailService {
     @Autowired
     private EmailRepository emailRepository;
 
+    @KafkaListener(topics = "emailTopic")
     public EmailDto sendEmail(EmailDto emailDto) {
         Email email = Email.builder()
                 .user_email(emailDto.getUser_email())
