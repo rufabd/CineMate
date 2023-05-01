@@ -2,69 +2,113 @@ package com.esiproject2023.discoveryservice.service;
 
 import com.esiproject2023.discoveryservice.model.Content;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class DiscoveryService {
     @Autowired
     private WebClient.Builder webClient;
 
-    public Content[] processResponse(String params) throws JsonProcessingException {
+    public Content[] processSearchResponse(String params) throws JsonProcessingException {
+//        System.out.println(params);
         String[] allParams = params.split(",");
-        String userDateOfBirth = allParams[0];
+        String movieTitle = allParams[0];
+        String titleType = allParams[1];
+        String genre = allParams[2];
+        String list = allParams[3];
+        String sort = allParams[4];
+        String year = allParams[5];
+        String endYear = allParams[6];
+        String startYear = allParams[7];
+        String page = allParams[8];
+
+        String processedSearch = ("AKA" + movieTitle + "?exact=false&" + createConfig(titleType, genre, list, sort, year, endYear, startYear, page,0));
+
+        String response = webClient.build().get().uri("http://metadata-service/metadata/searchByParams/{params}", processedSearch).retrieve().bodyToMono(String.class).block();
+
+        Gson gson = new Gson();
+        return gson.fromJson(response, Content[].class);
+    }
+
+    public Content[] processDiscoveryResponse(String params) throws JsonProcessingException {
+        String[] allParams = params.split(",");
+        int userAge = ageCalculator(allParams[0]);
         String favGenre = allParams[1];
         double ratingLimit = Double.parseDouble(allParams[2]);
 
-        String top_rated_250 = createConfig("", favGenre, "top_rated_250", "", "", "", "", "");
-        String top_rated_series_250 = createConfig("", favGenre, "top_rated_series_250", "", "", "", "", "");
+        String top_rated_250 = createConfig("", favGenre, "top_rated_250", "", "", "", "", "",30);
+        String top_rated_series_250 = createConfig("", favGenre, "top_rated_series_250", "", "", "", "", "",30);
 
-        String response1 = webClient.build().get().uri("http://metadata-service/metadata/searchByParams/{params}",top_rated_250).retrieve().bodyToMono(String.class).block();
-        String response2 = webClient.build().get().uri("http://metadata-service/metadata/searchByParams/{params}",top_rated_series_250).retrieve().bodyToMono(String.class).block();
+        String response1 = webClient.build().get().uri("http://metadata-service/metadata/searchByParams/{params}", top_rated_250).retrieve().bodyToMono(String.class).block();
+        String response2 = webClient.build().get().uri("http://metadata-service/metadata/searchByParams/{params}", top_rated_series_250).retrieve().bodyToMono(String.class).block();
 
-        Gson gson =new Gson();
+        Gson gson = new Gson();
         List<Content> content1 = Arrays.asList(gson.fromJson(response1, Content[].class));
         List<Content> content2 = Arrays.asList(gson.fromJson(response2, Content[].class));
 
-        List<Content> filteredContents = content1.stream()
-                .filter(content -> content.getRating() > ratingLimit).toList();
-        //HERE!!! add method which checks if user >= 18 || doesn't includes Romance && doesn't include: musicVideo,podcastEpisode,podcastSeries,videoGame,video
 
         List<Content> contents = new ArrayList<>(content1);
         contents.addAll(content2);
 
-        // Sort the contents by rating
+        List<Content> filteredContents = new ArrayList<>(contents.stream()
+                .filter(content -> isContentValid(content, userAge, ratingLimit)).toList());
 
-        contents.sort((c1, c2) -> (int) (c2.getRating() * 100 - c1.getRating() * 100));
+        // Sort the contents by rating
+        filteredContents.sort((c1, c2) -> (int) (c2.getRating() * 100 - c1.getRating() * 100));
 
         // Get the top 10 contents
         Content[] top10Contents = new Content[10];
         for (int i = 0; i < 10; i++) {
-            top10Contents[i] = contents.get(i);
+            top10Contents[i] = filteredContents.get(i);
         }
         return top10Contents;
     }
 
+    private int ageCalculator(String dateOfBirth) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate dob = LocalDate.parse(dateOfBirth, formatter);
 
-    private String createConfig(String titleType, String genre, String list, String sort, String year, String endYear, String startYear, String page) {
+        LocalDate currentDate = LocalDate.now();
+        Period age = Period.between(dob, currentDate);
+        return age.getYears();
+    }
+
+    private boolean isContentValid(Content c, int userAge, double ratingLimit) {
+        boolean valid = true;
+        List<String> genresList = Arrays.asList(c.getGenre().split(","));
+        List<String> checkList = Arrays.asList("musicVideo", "podcastEpisode", "podcastSeries", "videoGame", "video");
+        for (String genre : genresList) {
+            if (checkList.contains(genre)) {
+                valid = false;
+                break;
+            }
+        }
+        if (!valid) return false;
+
+        return c.getRating() > ratingLimit && (userAge >= 18 || !genresList.contains("Romance"));
+    }
+
+
+    private String createConfig(String titleType, String genre, String list, String sort, String year, String endYear, String startYear, String page, int limit) {
         LinkedHashMap<String, String> parameterTypes = new LinkedHashMap<String, String>();
-        parameterTypes.put("titleType", titleType);
-        parameterTypes.put("genre", genre);
-        parameterTypes.put("list", list);
-        parameterTypes.put("sort", sort);
-        parameterTypes.put("limit", "30");
-        parameterTypes.put("endYear", endYear);
-        parameterTypes.put("year", year);
+        parameterTypes.put("titleType", titleType.equals("no") ? "" : titleType);
+        parameterTypes.put("genre", genre.equals("no")? "" : genre);
+        parameterTypes.put("list", list.equals("no")? "" : list);
+        parameterTypes.put("sort", sort.equals("no")? "" : sort);
+        parameterTypes.put("limit", limit != 0 ?  Integer.toString(limit) : "");
+        parameterTypes.put("endYear", endYear.equals("no")? "" : endYear);
+        parameterTypes.put("year", year.equals("no")? "" : year);
         parameterTypes.put("info", "custom_info");
-        parameterTypes.put("page", page);
-        parameterTypes.put("startYear", startYear);
+        parameterTypes.put("page", page.equals("no")? "" : page);
+        parameterTypes.put("startYear", startYear.equals("no")? "" : startYear);
 
         StringBuilder queryStringBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : parameterTypes.entrySet()) {
