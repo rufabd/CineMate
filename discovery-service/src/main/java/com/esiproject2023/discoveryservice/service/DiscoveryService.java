@@ -26,8 +26,8 @@ public class DiscoveryService {
         String top_rated_250 = createConfig("", favGenre, "top_rated_250", "", "", "", "", "");
         String top_rated_series_250 = createConfig("", favGenre, "top_rated_series_250", "", "", "", "", "");
 
-        String response1 = webClient.build().get().uri("http://metadata-service/searchByParams/{params}",top_rated_250).retrieve().bodyToMono(String.class).block();
-        String response2 = webClient.build().get().uri("http://metadata-service/searchByParams/{params}",top_rated_series_250).retrieve().bodyToMono(String.class).block();
+        String response1 = webClient.build().get().uri("http://metadata-service:8085/api/searchByParams/{params}",top_rated_250).retrieve().bodyToMono(String.class).block();
+        String response2 = webClient.build().get().uri("http://metadata-service:8085/api/searchByParams/{params}",top_rated_series_250).retrieve().bodyToMono(String.class).block();
 
         Gson gson =new Gson();
         List<Content> content1 = Arrays.asList(gson.fromJson(response1, Content[].class));

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -18,7 +19,7 @@ public class MetadataController {
         this.dataService = dataService;
     }
 
-    @GetMapping("/search")
+    @GetMapping("/metadata/search")
     public ResponseEntity<Metadata[]> getAllMetadata() {
         try {
             String response = dataService.getResponse();
@@ -29,7 +30,7 @@ public class MetadataController {
         }
     }
 
-    @GetMapping("/searchByParams/{params}")
+    @GetMapping("/metadata/searchByParams/{params}")
     public ResponseEntity<Metadata[]> getRequiredMetadata(@PathVariable String params) {
         try {
             String response = dataService.getResponseWithParams(params);
