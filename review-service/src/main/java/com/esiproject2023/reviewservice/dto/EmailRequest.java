@@ -1,18 +1,14 @@
-package com.esiproject2023.emailservice.dto;
+package com.esiproject2023.reviewservice.dto;
 
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class EmailDto {
-    @Id
-    private Long id;
+@AllArgsConstructor
+public class EmailRequest {
     private String user_email;
     private String title;
     private String subject;

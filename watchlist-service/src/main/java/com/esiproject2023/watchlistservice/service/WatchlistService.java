@@ -19,7 +19,7 @@ public class WatchlistService {
     @Autowired
     private WatchlistRepository watchlistRepository;
 
-    private final WebClient webClient;
+    WebClient.Builder webClient;
     public WatchlistItemDto addWatchlist(WatchlistItemDto watchlistItemDto) {
         WatchlistItem watchlistItem = WatchlistItem.builder()
                 .userId(watchlistItemDto.getUserId())
@@ -44,7 +44,7 @@ public class WatchlistService {
         for (WatchlistItem watchlistItem : watchlistItems) {
             contentIds.append(watchlistItem.getContentId()).append(",");
         }
-        MetadataResponse[] result = webClient.get().uri("http://localhost:8085/searchByIDs/{ids}", contentIds.substring(0, contentIds.length()-1)).retrieve().bodyToMono(MetadataResponse[].class).block();
+        MetadataResponse[] result = webClient.build().get().uri("http://metadata-service/searchByIDs/{ids}", contentIds.substring(0, contentIds.length()-1)).retrieve().bodyToMono(MetadataResponse[].class).block();
         return List.of(result);
     }
 
