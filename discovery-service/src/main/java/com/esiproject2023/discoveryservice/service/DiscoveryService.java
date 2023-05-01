@@ -18,7 +18,6 @@ public class DiscoveryService {
     private WebClient.Builder webClient;
 
     public Content[] processSearchResponse(String params) throws JsonProcessingException {
-//        System.out.println(params);
         String[] allParams = params.split(",");
         String movieTitle = allParams[0];
         String titleType = allParams[1];
@@ -57,7 +56,6 @@ public class DiscoveryService {
 
         List<Content> contents = new ArrayList<>(content1);
         contents.addAll(content2);
-
         List<Content> filteredContents = new ArrayList<>(contents.stream()
                 .filter(content -> isContentValid(content, userAge, ratingLimit)).toList());
 
@@ -65,11 +63,11 @@ public class DiscoveryService {
         filteredContents.sort((c1, c2) -> (int) (c2.getRating() * 100 - c1.getRating() * 100));
 
         // Get the top 10 contents
-        Content[] top10Contents = new Content[10];
-        for (int i = 0; i < 10; i++) {
-            top10Contents[i] = filteredContents.get(i);
+        List<Content> top10Contents = new ArrayList<>();
+        for (int i = 0; i < filteredContents.size() && i < 10; i++) {
+            top10Contents.add(filteredContents.get(i));
         }
-        return top10Contents;
+        return top10Contents.toArray(new Content[0]);
     }
 
     private int ageCalculator(String dateOfBirth) {

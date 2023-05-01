@@ -37,8 +37,6 @@ public class MetadataService {
 
         } else restUrl.append("?").append(params);
 
-        System.out.println(restUrl);
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(restUrl.toString()))
                 .header("content-type", contentType)
@@ -111,68 +109,72 @@ public class MetadataService {
     }
 
     public Metadata[] processResponse(String response) {
-        JsonArray results = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("results");
-        List<Metadata> metadataList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            JsonObject result = results.get(i).getAsJsonObject();
-            String id = result.get("id").getAsString();
-            boolean titleTextExist = !result.getAsJsonObject("titleText").get("text").isJsonNull();
-            String titleText = titleTextExist ? result.getAsJsonObject("titleText").get("text").getAsString() : "";
-            boolean ratingCheck = result.getAsJsonObject("ratingsSummary")
-                    .get("aggregateRating")
-                    .isJsonNull();
+        if (!response.equals("")) {
+            JsonArray results = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("results");
+            List<Metadata> metadataList = new ArrayList<>();
+            for (int i = 0; i < results.size(); i++) {
+                JsonObject result = results.get(i).getAsJsonObject();
+                String id = result.get("id").getAsString();
+                boolean titleTextExist = !result.getAsJsonObject("titleText").get("text").isJsonNull();
+                String titleText = titleTextExist ? result.getAsJsonObject("titleText").get("text").getAsString() : "";
+                boolean ratingCheck = result.getAsJsonObject("ratingsSummary")
+                        .get("aggregateRating")
+                        .isJsonNull();
 
-            double rating = ratingCheck ? 0 : result.getAsJsonObject("ratingsSummary")
-                    .get("aggregateRating")
-                    .getAsDouble();
+                double rating = ratingCheck ? 0 : result.getAsJsonObject("ratingsSummary")
+                        .get("aggregateRating")
+                        .getAsDouble();
 
-            boolean plotText = !(result.get("plot").isJsonNull()) && (!result.getAsJsonObject("plot").get("plotText").isJsonNull());
-            String description = plotText
-                    ?
-                    result.getAsJsonObject("plot").getAsJsonObject("plotText").get("plainText").getAsString()
-                    : "";
+                boolean plotText = !(result.get("plot").isJsonNull()) && (!result.getAsJsonObject("plot").get("plotText").isJsonNull());
+                String description = plotText
+                        ?
+                        result.getAsJsonObject("plot").getAsJsonObject("plotText").get("plainText").getAsString()
+                        : "";
 
-            boolean castExist = result.get("principalCast") != null && (result.getAsJsonArray("principalCast").size()) > 0;
-            JsonArray casts = castExist ? result.getAsJsonArray("principalCast").get(0).getAsJsonObject().getAsJsonArray("credits") : new JsonArray();
-            StringBuilder allCasts = new StringBuilder();
+                boolean castExist = result.get("principalCast") != null && (result.getAsJsonArray("principalCast").size()) > 0;
+                JsonArray casts = castExist ? result.getAsJsonArray("principalCast").get(0).getAsJsonObject().getAsJsonArray("credits") : new JsonArray();
+                StringBuilder allCasts = new StringBuilder();
 
-            for (int itr = 0; itr < casts.size(); itr++) {
-                if (itr > 0) {
-                    allCasts.append(", ");
+                for (int itr = 0; itr < casts.size(); itr++) {
+                    if (itr > 0) {
+                        allCasts.append(", ");
+                    }
+                    String name = casts.get(itr).getAsJsonObject().getAsJsonObject("name").getAsJsonObject("nameText").get("text").getAsString();
+                    allCasts.append(name);
                 }
-                String name = casts.get(itr).getAsJsonObject().getAsJsonObject("name").getAsJsonObject("nameText").get("text").getAsString();
-                allCasts.append(name);
-            }
 
-            boolean genresExist = !result.get("genres").isJsonNull();
-            JsonArray genres = genresExist ? result.getAsJsonObject("genres").getAsJsonArray("genres") : new JsonArray();
-            StringBuilder allGenres = new StringBuilder();
-            for (int itr = 0; itr < genres.size(); itr++) {
-                if (itr > 0) {
-                    allGenres.append(", ");
+                boolean genresExist = !result.get("genres").isJsonNull();
+                JsonArray genres = genresExist ? result.getAsJsonObject("genres").getAsJsonArray("genres") : new JsonArray();
+                StringBuilder allGenres = new StringBuilder();
+                for (int itr = 0; itr < genres.size(); itr++) {
+                    if (itr > 0) {
+                        allGenres.append(", ");
+                    }
+                    allGenres.append(genres.get(itr).getAsJsonObject().get("text").getAsString());
                 }
-                allGenres.append(genres.get(itr).getAsJsonObject().get("text").getAsString());
+
+                boolean imageExist = !result.get("primaryImage").isJsonNull() && !result.getAsJsonObject("primaryImage").get("url").isJsonNull();
+                String imageURL = imageExist ? result.getAsJsonObject("primaryImage").get("url").getAsString() : "not found";
+
+                boolean dateExist = !result.get("releaseDate").isJsonNull();
+                String releaseDate;
+                if (dateExist) {
+                    JsonObject date = result.getAsJsonObject("releaseDate");
+                    releaseDate = date.get("day") + "-" + date.get("month") + "-" + date.get("year");
+                } else {
+                    releaseDate = "not found";
+                }
+
+                boolean directorsExist = (result.getAsJsonArray("directors").size()) > 0;
+                String director = directorsExist ? result.getAsJsonArray("directors").get(0).getAsJsonObject().getAsJsonArray("credits").get(0).getAsJsonObject().getAsJsonObject("name").getAsJsonObject("nameText").get("text").getAsString() : "not found";
+
+                Metadata metadata = new Metadata(id, titleText, rating, allCasts.toString(), description, allGenres.toString(), imageURL, releaseDate, director); //, genre, releaseDate, organization, awards.toArray(new String[0])
+                metadataList.add(metadata);
             }
-
-            boolean imageExist = !result.get("primaryImage").isJsonNull() && !result.getAsJsonObject("primaryImage").get("url").isJsonNull();
-            String imageURL = imageExist ? result.getAsJsonObject("primaryImage").get("url").getAsString() : "not found";
-
-            boolean dateExist = !result.get("releaseDate").isJsonNull();
-            String releaseDate;
-            if (dateExist) {
-                JsonObject date = result.getAsJsonObject("releaseDate");
-                releaseDate = date.get("day") + "-" + date.get("month") + "-" + date.get("year");
-            } else {
-                releaseDate = "not found";
-            }
-
-            boolean directorsExist = (result.getAsJsonArray("directors").size()) > 0;
-            String director = directorsExist ? result.getAsJsonArray("directors").get(0).getAsJsonObject().getAsJsonArray("credits").get(0).getAsJsonObject().getAsJsonObject("name").getAsJsonObject("nameText").get("text").getAsString() : "not found";
-
-            Metadata metadata = new Metadata(id, titleText, rating, allCasts.toString(), description, allGenres.toString(), imageURL, releaseDate, director); //, genre, releaseDate, organization, awards.toArray(new String[0])
-            metadataList.add(metadata);
+            return metadataList.toArray(new Metadata[0]);
+        } else {
+            return new Metadata[0];
         }
-        return metadataList.toArray(new Metadata[0]);
     }
 
 }

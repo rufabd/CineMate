@@ -22,9 +22,6 @@ public class DiscoveryController {
 
     @GetMapping("/search/{params}") //search section
     public ResponseEntity<Content[]> getDiscoveryDataBySearch(@PathVariable String params) {
-        //searchedTitle
-        /// add "/search/akas/TITLENAME"
-        // only then add additional params by calling method createConfig()
         try {
             Content[] content = discoveryService.processSearchResponse(params);
             return ResponseEntity.ok(content);
