@@ -8,7 +8,9 @@ import com.esiproject2023.reviewservice.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
+import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Meta;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -73,8 +75,26 @@ public class ReviewService {
     }
 
     public void deleteReview(Long id) {
+        Optional<Review> reviewToBeDeleted = reviewRepository.findById(id);
+        String contentIdForDeletedReview = reviewToBeDeleted.get().getContentId();
+        MetadataResponse[] response;
+        if(contentIdForDeletedReview != null) {
+            response = webClient.build().get().uri("http://metadata-service/searchByIDs/{ids}", contentIdForDeletedReview).retrieve().bodyToMono(MetadataResponse[].class).block();
+            if(response != null) {
+                //           Dynamic email here, once User Auth is done.
+                EmailRequest emailRequest = new EmailRequest(
+                        "rufatabdullayev029@gmail.com",
+                        "We have deleted your review!", "Your review has been deleted",
+                        "We have deleted your review for the content " + "'" + response[0].getTitle() + "'" + ", as it was containing inappropriate content which was against our policy regarding" +
+                                " adding reviews/ratings for the content. We always try to keep our platform safe and friendly for everyone.\n\n" +
+                                "Unfortunately, we will have to ban you from the platform in case of repetition of such case.\n\n" +
+                                "Thank you for your understanding and cooperation.\n\n"+ "Your deleted review for the content was like:\n" + "'" + reviewToBeDeleted.get().getBody() + "'" +
+                                "\n\nSincerely,\nTeam CineMate!");
+                webClient.build().post().uri("http://email-service/api/email/send").body(Mono.just(emailRequest), EmailRequest.class).retrieve().bodyToMono(EmailRequest.class).subscribe();
+            }
+        }
         reviewRepository.deleteById(id);
-        log.info("Product with id {} has been deleted", id);
+        log.info("Review with id {} has been deleted", id);
     }
 
 }
