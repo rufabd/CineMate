@@ -83,15 +83,16 @@ public class DiscoveryService {
         boolean valid = true;
         List<String> genresList = Arrays.asList(c.getGenre().split(","));
         List<String> checkList = Arrays.asList("musicVideo", "podcastEpisode", "podcastSeries", "videoGame", "video");
+
+        if (c.containsNull()) return false;
+
         for (String genre : genresList) {
             if (checkList.contains(genre)) {
                 valid = false;
                 break;
             }
         }
-        if (!valid) return false;
-
-        return c.getRating() > ratingLimit && (userAge >= 18 || !genresList.contains("Romance"));
+        return valid && c.getRating() > ratingLimit && (userAge >= 18 || !genresList.contains("Romance"));
     }
 
 

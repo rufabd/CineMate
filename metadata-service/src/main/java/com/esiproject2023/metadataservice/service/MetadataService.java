@@ -109,7 +109,7 @@ public class MetadataService {
     }
 
     public Metadata[] processResponse(String response) {
-        if (!response.equals("")) {
+        if (!response.equals("") && !response.equals("{}")) {
             JsonArray results = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("results");
             List<Metadata> metadataList = new ArrayList<>();
             for (int i = 0; i < results.size(); i++) {
