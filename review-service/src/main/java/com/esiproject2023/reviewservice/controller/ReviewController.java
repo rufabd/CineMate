@@ -24,7 +24,6 @@ public class ReviewController {
     }
 
     @GetMapping("/all")
-    @ResponseStatus(HttpStatus.OK)
     public List<ReviewDto> getReviews() {
         return reviewService.getAllReviews();
     }
