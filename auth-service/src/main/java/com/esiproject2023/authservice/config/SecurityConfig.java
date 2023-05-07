@@ -31,7 +31,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity()
 public class SecurityConfig {
     @Autowired
     private JwtAuthFilter authFilter;

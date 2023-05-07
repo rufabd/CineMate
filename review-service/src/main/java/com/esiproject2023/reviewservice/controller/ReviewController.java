@@ -5,6 +5,7 @@ import com.esiproject2023.reviewservice.model.Review;
 import com.esiproject2023.reviewservice.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class ReviewController {
         return reviewService.createReview(reviewDto);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
     public List<ReviewDto> getReviews() {
         return reviewService.getAllReviews();
