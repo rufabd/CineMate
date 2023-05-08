@@ -38,4 +38,7 @@ public class User {
 
     @Column(name = "dob", nullable = false)
     private String dob;
+
+    @Column(name = "minRating", nullable = false)
+    private String minRating;
 }

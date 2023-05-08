@@ -18,4 +18,5 @@ public class UserDto {
     private String password;
     private String favGenre;
     private String dob;
+    private String minRating;
 }
