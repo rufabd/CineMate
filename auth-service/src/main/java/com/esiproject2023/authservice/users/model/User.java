@@ -41,4 +41,7 @@ public class User {
 
     @Column(name = "minRating", nullable = false)
     private String minRating;
+
+    @Column(name = "emailPreferences", nullable = false)
+    private String emailPreferences;
 }

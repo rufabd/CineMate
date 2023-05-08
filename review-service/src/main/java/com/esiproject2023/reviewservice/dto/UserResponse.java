@@ -17,4 +17,5 @@ public class UserResponse {
     String favGenre;
     String dob;
     String minRating;
+    String emailPreferences;
 }
