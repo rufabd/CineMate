@@ -32,4 +32,10 @@ public class User {
 
     @Column(name = "role", nullable = false)
     private String role;
+
+    @Column(name = "favGenre", nullable = false)
+    private String favGenre;
+
+    @Column(name = "dob", nullable = false)
+    private String dob;
 }
