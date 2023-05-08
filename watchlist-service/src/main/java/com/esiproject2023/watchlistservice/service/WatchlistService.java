@@ -29,7 +29,7 @@ public class WatchlistService {
                 .contentId(watchlistItemDto.getContentId())
                 .build();
         WatchlistItem watchlistItemFindExists = watchlistRepository.findByUserIdAndContentId(watchlistItem.getUserId(), watchlistItem.getContentId());
-        if(watchlistItemFindExists != null) {
+        if(watchlistItemFindExists == null) {
             watchlistRepository.save(watchlistItem);
             log.info("The user with id {} added content with id {} to the watchlist with id {}", watchlistItem.getUserId(), watchlistItem.getContentId(), watchlistItem.getId());
             return "Success";

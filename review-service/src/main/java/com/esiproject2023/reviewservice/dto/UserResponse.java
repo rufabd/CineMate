@@ -14,4 +14,7 @@ public class UserResponse {
     String email;
     String password;
     String role;
+    String favGenre;
+    String dob;
+    String minRating;
 }
