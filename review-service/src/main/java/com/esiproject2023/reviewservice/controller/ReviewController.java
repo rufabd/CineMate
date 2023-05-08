@@ -20,7 +20,7 @@ public class ReviewController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewDto addReview(@RequestBody ReviewDto reviewDto) {
+    public String addReview(@RequestBody ReviewDto reviewDto) {
         return reviewService.createReview(reviewDto);
     }
 
@@ -38,8 +38,8 @@ public class ReviewController {
 
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReview(@PathVariable Long id) {
-        reviewService.deleteReview(id);
+    public String deleteReview(@PathVariable Long id) {
+        return reviewService.deleteReview(id);
     }
 
     @GetMapping("/content/{contentId}")

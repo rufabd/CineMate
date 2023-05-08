@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class ReviewDto {
     @Id
     private Long id;
-    private Long userId;
+    private String userId;
     private String contentId;
     private String body;
     private Double score;

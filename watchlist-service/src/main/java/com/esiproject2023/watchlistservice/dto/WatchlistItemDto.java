@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class WatchlistItemDto {
     @Id
     private Long id;
-    private Long userId;
+    private String userId;
     private String contentId;
 }

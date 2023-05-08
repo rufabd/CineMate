@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface WatchlistRepository extends JpaRepository<WatchlistItem, Long> {
-    List<WatchlistItem> findByUserId(Long userId);
-    WatchlistItem findByUserIdAndContentId(Long userId, String contentId);
+    List<WatchlistItem> findByUserId(String userId);
+    WatchlistItem findByUserIdAndContentId(String userId, String contentId);
 }

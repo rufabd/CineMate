@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class UserService {
@@ -21,5 +23,9 @@ public class UserService {
         userRepository.save(user);
         log.info("New user has been successfully created with id {}", user.getId());
 //        return user;
+    }
+
+    public Optional<User> getUserInfoForUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

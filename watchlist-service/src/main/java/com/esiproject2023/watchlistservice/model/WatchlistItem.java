@@ -20,7 +20,7 @@ public class WatchlistItem {
     private Long id;
 
     @Column(name = "userId", nullable = false)
-    private Long userId;
+    private String userId;
 
     @Column(name = "contentId", nullable = false)
     private String contentId;
