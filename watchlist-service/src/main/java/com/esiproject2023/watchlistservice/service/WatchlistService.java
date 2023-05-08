@@ -52,6 +52,7 @@ public class WatchlistService {
         for (WatchlistItem watchlistItem : watchlistItems) {
             contentIds.append(watchlistItem.getContentId()).append(",");
         }
+        if(watchlistItems.size() == 0) return new ArrayList<>();
         MetadataResponse[] result = webClient.build().get().uri("http://metadata-service/metadata/searchByIDs/{ids}", contentIds.substring(0, contentIds.length()-1)).retrieve().bodyToMono(MetadataResponse[].class).block();
         if(result != null) return List.of(result);
         else return new ArrayList<>();

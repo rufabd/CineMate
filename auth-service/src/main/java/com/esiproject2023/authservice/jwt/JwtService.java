@@ -33,6 +33,7 @@ public class JwtService {
     private String createToken(Map<String, Object> claims, String username) {
         UserDetails systemUserDetails = systemUserDetailsService.loadUserByUsername(username);
         Collection<? extends GrantedAuthority> role = systemUserDetails.getAuthorities();
+
         String roleClaim = role.toString();
         log.info("roleClaim: {}", roleClaim);
         int start = roleClaim.indexOf("[");
