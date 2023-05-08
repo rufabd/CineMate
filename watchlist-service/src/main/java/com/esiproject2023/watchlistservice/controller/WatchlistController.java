@@ -19,19 +19,19 @@ public class WatchlistController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public WatchlistItemDto addContentToWatchlist(@RequestBody WatchlistItemDto watchlistItemDto) {
+    public String addContentToWatchlist(@RequestBody WatchlistItemDto watchlistItemDto) {
         return watchlistService.addWatchlist(watchlistItemDto);
     }
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<MetadataResponse> getUserWatchlist(@PathVariable Long userId) {
+    public List<MetadataResponse> getUserWatchlist(@PathVariable String userId) {
         return watchlistService.getWatchListForUser(userId);
     }
 
     @DeleteMapping("/{userId}/delete/{contentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFromWatchlist(@PathVariable Long userId, @PathVariable String contentId) {
+    public void deleteFromWatchlist(@PathVariable String userId, @PathVariable String contentId) {
         watchlistService.removeContentFromWatchlist(userId, contentId);
     }
 }
