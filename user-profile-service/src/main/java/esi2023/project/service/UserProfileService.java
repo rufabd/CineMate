@@ -1,8 +1,10 @@
 package esi2023.project.service;
 
-import esi2023.project.dto.*;
-import esi2023.project.repository.UserProfileRepository;
+import esi2023.project.dto.Content;
+import esi2023.project.dto.EmailRequest;
+import esi2023.project.dto.UserProfile;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -11,23 +13,24 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Random;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class UserProfileService {
 
-    private final String USER_MS_URL = "http://";
-    private final String DISCOVERY_MS_URL = "http://";
+    @Value("${userService}")
+    private String USER_MS_URL;
+
+    @Value("${discoveryService}")
+    private String DISCOVERY_MS_URL;
+
     private final WebClient.Builder webClient;
-    private final UserProfileRepository userProfileRepository;
     private final KafkaTemplate<String, EmailRequest> kafkaTemplate;
 
     /**
      * runs at 9:00 AM daily to check which users should be emailed
      */
-    @Scheduled(cron = "0 9 * * *")
+    @Scheduled(cron = "0 0 9 * * *")
     public void sendEmails() {
         var dailyUsers = webClient.build().get().uri(USER_MS_URL, "daily").retrieve().bodyToMono(UserProfile[].class).block();
         sendEmailToUsers(dailyUsers);
