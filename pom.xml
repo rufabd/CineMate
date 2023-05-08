@@ -23,6 +23,7 @@
         <module>discovery-server</module>
         <module>api-gateway</module>
         <module>user-profile-service</module>
+        <module>auth-service</module>
     </modules>
 
     <properties>
