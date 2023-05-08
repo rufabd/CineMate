@@ -27,7 +27,7 @@ public class UserProfileService {
      */
     @Scheduled(cron = "0 0 9 * * *")
     public void sendEmails() {
-//        var dailyUsers = webClient.build().get().uri("USER_MS_URL", "daily").retrieve().bodyToMono(UserProfile[].class).block();
+//        var dailyUsers = webClient.build().get().uri("http://userprofile-service/email/{params}", "daily").retrieve().bodyToMono(UserProfile[].class).block();
         var dailyUsers = UserProfileFactory.getRandomUserProfiles(32, "daily");
         sendEmailToUsers(dailyUsers);
 

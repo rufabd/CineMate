@@ -29,7 +29,7 @@ public class EmailService {
                 .subject(emailDto.getSubject())
                 .content(emailDto.getContent()).build();
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("platformcinemate@gmail.com");
+        message.setFrom("rasulisgandarov35@gmail.com");
         message.setTo(email.getUser_email());
         message.setText(email.getTitle() + "\n\n" + email.getContent());
         message.setSubject(email.getSubject());

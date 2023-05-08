@@ -24,29 +24,29 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
-  db_emails:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: db_emails
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Murad.123
-    ports:
-      - "5432:5432"
-
-  db_reviews:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: db_reviews
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Murad.123
-    ports:
-      - "5433:5432"
-
-  db_watchlists:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: db_watchlists
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Murad.123
-    ports:
-      - "5434:5432"
+#  db_emails:
+#    image: postgres:latest
+#    environment:
+#      POSTGRES_DB: db_emails
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: Murad.123
+#    ports:
+#      - "5432:5432"
+#
+#  db_reviews:
+#    image: postgres:latest
+#    environment:
+#      POSTGRES_DB: db_reviews
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: Murad.123
+#    ports:
+#      - "5433:5432"
+#
+#  db_watchlists:
+#    image: postgres:latest
+#    environment:
+#      POSTGRES_DB: db_watchlists
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: Murad.123
+#    ports:
+#      - "5434:5432"
