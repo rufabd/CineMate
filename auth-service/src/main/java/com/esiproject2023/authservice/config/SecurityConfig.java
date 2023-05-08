@@ -48,21 +48,21 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(withDefaults())
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/register", "/auth/authenticate", "/auth/login").permitAll()
-                        .requestMatchers("/review/all", "/auth/admin").hasAuthority("ADMIN")
-                        .requestMatchers("/auth/user", "/review/add").hasAuthority("USER")
-                        .anyRequest().authenticated())
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-//                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+        return http   .csrf().disable()
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .cors(withDefaults())
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/auth/register", "/auth/authenticate", "/auth/login").permitAll()
+//                        .requestMatchers("/review/all", "/auth/admin").hasAuthority("ADMIN")
+//                        .requestMatchers("/auth/user", "/review/add").hasAuthority("USER")
+//                        .anyRequest().authenticated())
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+//                .authenticationProvider(authenticationProvider()) not needed
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -80,7 +80,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));

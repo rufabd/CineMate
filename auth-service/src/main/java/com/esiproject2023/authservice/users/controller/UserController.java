@@ -16,6 +16,7 @@ import com.esiproject2023.authservice.users.model.User;
 @RestController
 @Slf4j
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
 public class UserController {
     @Autowired
     private UserService userService;
