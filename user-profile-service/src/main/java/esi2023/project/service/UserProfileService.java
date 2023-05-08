@@ -1,10 +1,10 @@
 package esi2023.project.service;
 
+import esi2023.project.UserProfileFactory;
 import esi2023.project.dto.Content;
 import esi2023.project.dto.EmailRequest;
 import esi2023.project.dto.UserProfile;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -13,16 +13,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class UserProfileService {
-
-    @Value("${userService}")
-    private String USER_MS_URL;
-
-    @Value("${discoveryService}")
-    private String DISCOVERY_MS_URL;
 
     private final WebClient.Builder webClient;
     private final KafkaTemplate<String, EmailRequest> kafkaTemplate;
@@ -32,25 +27,31 @@ public class UserProfileService {
      */
     @Scheduled(cron = "0 0 9 * * *")
     public void sendEmails() {
-        var dailyUsers = webClient.build().get().uri(USER_MS_URL, "daily").retrieve().bodyToMono(UserProfile[].class).block();
+//        var dailyUsers = webClient.build().get().uri("USER_MS_URL", "daily").retrieve().bodyToMono(UserProfile[].class).block();
+        var dailyUsers = UserProfileFactory.getRandomUserProfiles(32, "daily");
         sendEmailToUsers(dailyUsers);
 
          if (LocalDate.now().getDayOfWeek().equals(DayOfWeek.WEDNESDAY) || LocalDate.now().getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
-             var twiceWeeklyUsers = webClient.build().get().uri(USER_MS_URL, "twicePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
-             var thriceWeeklyUsers = webClient.build().get().uri(USER_MS_URL, "thricePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
+//             var twiceWeeklyUsers = webClient.build().get().uri("USER_MS_URL", "twicePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
+//             var thriceWeeklyUsers = webClient.build().get().uri("USER_MS_URL", "thricePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
+             var twiceWeeklyUsers = UserProfileFactory.getRandomUserProfiles(23, "twicePerWeek");
+             var thriceWeeklyUsers = UserProfileFactory.getRandomUserProfiles(10, "thricePerWeek");
              sendEmailToUsers(twiceWeeklyUsers);
              sendEmailToUsers(thriceWeeklyUsers);
          }
 
          if (LocalDate.now().getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-             var thriceWeeklyUsers = webClient.build().get().uri(USER_MS_URL, "thricePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
-             var weeklyUsers = webClient.build().get().uri(USER_MS_URL, "weekly").retrieve().bodyToMono(UserProfile[].class).block();
+//             var thriceWeeklyUsers = webClient.build().get().uri("USER_MS_URL", "thricePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
+             var thriceWeeklyUsers = UserProfileFactory.getRandomUserProfiles(23, "thricePerWeek");
+//             var weeklyUsers = webClient.build().get().uri("USER_MS_URL", "weekly").retrieve().bodyToMono(UserProfile[].class).block();
+             var weeklyUsers = UserProfileFactory.getRandomUserProfiles(53, "weekly");
              sendEmailToUsers(thriceWeeklyUsers);
              sendEmailToUsers(weeklyUsers);
          }
 
          if (LocalDate.now().getDayOfMonth() == 1) {
-             var monthlyUsers = webClient.build().get().uri(USER_MS_URL, "monthly").retrieve().bodyToMono(UserProfile[].class).block();
+//             var monthlyUsers = webClient.build().get().uri("USER_MS_URL", "monthly").retrieve().bodyToMono(UserProfile[].class).block();
+             var monthlyUsers = UserProfileFactory.getRandomUserProfiles(8, "monthly");
              sendEmailToUsers(monthlyUsers);
          }
     }
@@ -61,14 +62,27 @@ public class UserProfileService {
      * @param users set of users who should be emailed
      */
     private void sendEmailToUsers(UserProfile[] users) {
+        Random random = new Random();
         for (var user : users) {
             var genres = user.genrePreferences();
             Collections.shuffle(genres);
             var randomGenre = genres.get(0);
-            var content = webClient.build().get().uri(DISCOVERY_MS_URL, randomGenre).retrieve().bodyToMono(Content.class).block();
-            var email = createEmail(user, content);
+            int randomRating = random.nextInt(9) + 1;
+            var params = generateRequestParams(user, randomGenre, randomRating);
+            var content = webClient.build().get().uri("http://discovery-service/discovery/{params}", params).retrieve().bodyToMono(Content[].class).block();
+            var email = createEmail(user, content[0]);
             kafkaTemplate.send("emailTopic", email);
         }
+    }
+
+    private String generateRequestParams(UserProfile user, String randomGenre, int randomRating) {
+        int month = user.dob().getMonthValue();
+        int day = user.dob().getDayOfMonth();
+        int year = user.dob().getYear();
+        String monthStr = month < 10 ? "0" + month : Integer.toString(month);
+        String dayStr = day < 10 ? "0" + day : Integer.toString(day);
+        String yearStr = Integer.toString(year);
+        return monthStr + "-" + dayStr + "-" + yearStr + "," + randomGenre + "," + randomRating;
     }
 
     /**
