@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import com.esiproject2023.authservice.users.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -71,5 +72,10 @@ public class UserController {
     @GetMapping("/{username}")
     public Optional<User> getUserByUsername(@PathVariable String username) {
         return userService.getUserInfoForUsername(username);
+    }
+
+    @GetMapping("/{emailPreferences}")
+    public List<User> getUsersForPreferences(@PathVariable String emailPreferences) {
+        return userService.getUserForPreference(emailPreferences);
     }
 }
