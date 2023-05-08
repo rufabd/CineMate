@@ -9,6 +9,7 @@ import java.util.Random;
 
 public class UserProfileFactory {
 
+//    provide dynamic data here
     private static final String[] FULL_NAMES = {"Emma Smith", "Liam Johnson", "Olivia Brown", "Noah Garcia", "Ava Miller",
             "William Davis", "Sophia Rodriguez", "James Martinez", "Isabella Hernandez", "Benjamin Lopez",
             "Mia Gonzalez", "Jacob Perez", "Charlotte Wilson", "Michael King", "Amelia Wright", "Ethan Scott",

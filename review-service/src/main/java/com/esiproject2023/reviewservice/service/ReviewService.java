@@ -8,15 +8,10 @@ import com.esiproject2023.reviewservice.model.Review;
 import com.esiproject2023.reviewservice.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
-import org.bouncycastle.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Meta;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,10 +91,11 @@ public class ReviewService {
             String contentIdForDeletedReview = reviewToBeDeleted.get().getContentId();
             if(contentIdForDeletedReview != null) {
                 response = webClient.build().get().uri("http://metadata-service/metadata/searchByIDs/{ids}", contentIdForDeletedReview).retrieve().bodyToMono(MetadataResponse[].class).block();
-                if(response != null) {
+                UserResponse userResponse = webClient.build().get().uri("http://auth-service/auth/{username}", reviewToBeDeleted.get().getUserId()).retrieve().bodyToMono(UserResponse.class).block();
+                if(response != null && userResponse != null) {
                     //           Dynamic email here, once User Auth is done.
                     EmailRequest emailRequest = new EmailRequest(
-                            "muradkhasmammadov@gmail.com",
+                            userResponse.getEmail(),
                             "We have deleted your review!", "Your review has been deleted",
                             "We have deleted your review for the content " + "'" + response[0].getTitle() + "'" + ", as it was containing inappropriate content which was against our policy regarding" +
                                     " adding reviews/ratings for the content. We always try to keep our platform safe and friendly for everyone.\n\n" +
