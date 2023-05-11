@@ -6,6 +6,7 @@ import esi2023.project.dto.UserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,6 +17,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@EnableScheduling
 public class UserProfileService {
 
     @Autowired
@@ -26,16 +28,16 @@ public class UserProfileService {
      * runs at 9:00 AM daily to check which users should be emailed
      */
 //    @Scheduled(cron = "0 0 9 * * *")
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 1000000)
     public void sendEmails() {
-        UserProfile[] dailyUsers = webClient.build().get().uri("http://auth-service/auth/{emailPreferences}", "daily").retrieve().bodyToMono(UserProfile[].class).block();
+        UserProfile[] dailyUsers = webClient.build().get().uri("http://auth-service/auth/emailPreferences/{emailPreferences}", "daily").retrieve().bodyToMono(UserProfile[].class).block();
 //        var dailyUsers = UserProfileFactory.getRandomUserProfiles(32, "daily");
         if(dailyUsers != null) sendEmailToUsers(dailyUsers);
 
 
         if (LocalDate.now().getDayOfWeek().equals(DayOfWeek.WEDNESDAY) || LocalDate.now().getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
-            UserProfile[] twiceWeeklyUsers = webClient.build().get().uri("http://auth-service/auth/{emailPreferences}", "twiceWeeklyUsers").retrieve().bodyToMono(UserProfile[].class).block();
-            UserProfile[] thriceWeeklyUsers = webClient.build().get().uri("http://auth-service/auth/{emailPreferences}", "thriceWeeklyUsers").retrieve().bodyToMono(UserProfile[].class).block();
+            UserProfile[] twiceWeeklyUsers = webClient.build().get().uri("http://auth-service/auth/emailPreferences/{emailPreferences}", "twicePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
+            UserProfile[] thriceWeeklyUsers = webClient.build().get().uri("http://auth-service/auth/emailPreferences/{emailPreferences}", "thricePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
             //             var thriceWeeklyUsers = webClient.build().get().uri("USER_MS_URL", "thricePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
 //             var twiceWeeklyUsers = UserProfileFactory.getRandomUserProfiles(23, "twicePerWeek");
 //             var thriceWeeklyUsers = UserProfileFactory.getRandomUserProfiles(10, "thricePerWeek");
@@ -49,11 +51,11 @@ public class UserProfileService {
 
         if (LocalDate.now().getDayOfWeek().equals(DayOfWeek.MONDAY)) {
 //             var thriceWeeklyUsers = webClient.build().get().uri("USER_MS_URL", "thricePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
-            UserProfile[] thriceWeeklyUsers = webClient.build().get().uri("http://auth-service/auth/{emailPreferences}", "thriceWeeklyUsers").retrieve().bodyToMono(UserProfile[].class).block();
+            UserProfile[] thriceWeeklyUsers = webClient.build().get().uri("http://auth-service/auth/emailPreferences/{emailPreferences}", "thricePerWeek").retrieve().bodyToMono(UserProfile[].class).block();
 //             var thriceWeeklyUsers = UserProfileFactory.getRandomUserProfiles(23, "thricePerWeek");
 //             var weeklyUsers = webClient.build().get().uri("USER_MS_URL", "weekly").retrieve().bodyToMono(UserProfile[].class).block();
 //             var weeklyUsers = UserProfileFactory.getRandomUserProfiles(53, "weekly");
-            UserProfile[] weeklyUsers = webClient.build().get().uri("http://auth-service/auth/{emailPreferences}", "weeklyUsers").retrieve().bodyToMono(UserProfile[].class).block();
+            UserProfile[] weeklyUsers = webClient.build().get().uri("http://auth-service/auth/emailPreferences/{emailPreferences}", "weekly").retrieve().bodyToMono(UserProfile[].class).block();
             if(thriceWeeklyUsers != null) {
                 sendEmailToUsers(thriceWeeklyUsers);
             }
@@ -63,7 +65,7 @@ public class UserProfileService {
         }
 
         if (LocalDate.now().getDayOfMonth() == 1) {
-            UserProfile[] monthlyUsers = webClient.build().get().uri("http://auth-service/auth/{emailPreferences}", "monthlyUsers").retrieve().bodyToMono(UserProfile[].class).block();
+            UserProfile[] monthlyUsers = webClient.build().get().uri("http://auth-service/auth/emailPreferences/{emailPreferences}", "monthly").retrieve().bodyToMono(UserProfile[].class).block();
 //             var monthlyUsers = webClient.build().get().uri("USER_MS_URL", "monthly").retrieve().bodyToMono(UserProfile[].class).block();
 //             var monthlyUsers = UserProfileFactory.getRandomUserProfiles(8, "monthly");
             if(monthlyUsers != null) {
