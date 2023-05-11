@@ -34,6 +34,12 @@ public class JwtService {
         UserDetails systemUserDetails = systemUserDetailsService.loadUserByUsername(username);
         Collection<? extends GrantedAuthority> role = systemUserDetails.getAuthorities();
 
+        // Retrieve the user ID from the systemUserDetailsService
+        Long userId = systemUserDetailsService.getUserIdByUsername(username);
+
+        // Add the user ID to the claims map
+        claims.put("id", userId);
+
         String roleClaim = role.toString();
         log.info("roleClaim: {}", roleClaim);
         int start = roleClaim.indexOf("[");
@@ -70,6 +76,10 @@ public class JwtService {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public Long extractUserId(String token) {
+        return extractAllClaims(token).get("id", Long.class);
     }
 
     public String extractRole(String token) {
