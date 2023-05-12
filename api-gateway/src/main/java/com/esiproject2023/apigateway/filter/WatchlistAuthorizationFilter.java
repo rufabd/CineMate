@@ -3,38 +3,34 @@ package com.esiproject2023.apigateway.filter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 
 import java.nio.file.AccessDeniedException;
 import java.security.Key;
 import java.util.Base64;
 
 @Component
-@Slf4j
-public class ReviewAuthorizationFilter extends AbstractGatewayFilterFactory<ReviewAuthorizationFilter.Config> {
+public class WatchlistAuthorizationFilter extends AbstractGatewayFilterFactory<WatchlistAuthorizationFilter.Config> {
     public static final String SECRET = "4B6150645267556B58703273357638792F423F4528482B4D6251655468566D59";
 
     @Autowired
     private RouteValidator routeValidator;
 
-    public ReviewAuthorizationFilter() {
-        super(ReviewAuthorizationFilter.Config.class);
+    public WatchlistAuthorizationFilter() {
+        super(WatchlistAuthorizationFilter.Config.class);
     }
 
     @Override
-    public GatewayFilter apply(ReviewAuthorizationFilter.Config config) {
+    public GatewayFilter apply(WatchlistAuthorizationFilter.Config config) {
         return ((exchange, chain) -> {
             if(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION) != null) {
 //                System.out.println(routeValidator.reviewSecuredRole(exchange.getRequest()));
-                if(routeValidator.reviewSecuredRole(exchange.getRequest()) != null) {
-                    log.info("My method roleee is {}", routeValidator.reviewSecuredRole(exchange.getRequest()));
-                    log.info("Request roleee is {}", extractRole(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0)));
-                    if(routeValidator.reviewSecuredRole(exchange.getRequest()).contains(extractRole(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0)))) {
+                if(routeValidator.watchlistSecuredRole(exchange.getRequest()) != null) {
+                    if(routeValidator.watchlistSecuredRole(exchange.getRequest()).contains(extractRole(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0)))) {
                         System.out.println("Authorization is righttttt");
                     }
                     else {
@@ -46,7 +42,6 @@ public class ReviewAuthorizationFilter extends AbstractGatewayFilterFactory<Revi
                     }
                 }
             }
-
             return chain.filter(exchange);
         });
     }

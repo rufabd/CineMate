@@ -23,13 +23,13 @@ public class WatchlistController {
         return watchlistService.addWatchlist(watchlistItemDto);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/get/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public List<MetadataResponse> getUserWatchlist(@PathVariable String userId) {
         return watchlistService.getWatchListForUser(userId);
     }
 
-    @DeleteMapping("/{userId}/delete/{contentId}")
+    @DeleteMapping("/delete/{userId}/{contentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFromWatchlist(@PathVariable String userId, @PathVariable String contentId) {
         watchlistService.removeContentFromWatchlist(userId, contentId);
