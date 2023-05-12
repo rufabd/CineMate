@@ -30,9 +30,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if(authHeader != null && authHeader.startsWith("Bearer")) {
                     authHeader = authHeader.substring(7);
+                    System.out.println("Authorization header isssss" + authHeader);
                 }
                 try {
                     jwtUtil.validateToken(authHeader);
+                    System.out.println("Authorization header isssss" + authHeader);
                 } catch (Exception e) {
                     throw new RuntimeException("unauthorized access to application");
                 }

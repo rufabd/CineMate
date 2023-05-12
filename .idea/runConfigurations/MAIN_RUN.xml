@@ -1,14 +1,13 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="MAIN RUN" type="CompoundRunConfigurationType">
-    <toRun name="ApiGatewayApplication" type="Application" />
-    <toRun name="AuthServiceApplication" type="Application" />
-    <toRun name="DiscoveryServerApplication" type="Application" />
-    <toRun name="DiscoveryServiceApplication" type="Application" />
-    <toRun name="EmailServiceApplication" type="Application" />
-    <toRun name="MetadataServiceApplication" type="Application" />
-    <toRun name="ReviewServiceApplication" type="Application" />
-    <toRun name="UserProfileServiceApplication" type="Application" />
-    <toRun name="WatchlistServiceApplication" type="Application" />
+    <toRun name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="AuthServiceApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="DiscoveryServerApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="DiscoveryServiceApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="EmailServiceApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="MetadataServiceApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="ReviewServiceApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="WatchlistServiceApplication" type="SpringBootApplicationConfigurationType" />
     <method v="2" />
   </configuration>
 </component>

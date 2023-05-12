@@ -49,17 +49,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http   .csrf().disable()
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .cors(withDefaults())
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/auth/register", "/auth/authenticate", "/auth/login").permitAll()
-//                        .requestMatchers("/review/all", "/auth/admin").hasAuthority("ADMIN")
-//                        .requestMatchers("/auth/user", "/review/add").hasAuthority("USER")
-//                        .anyRequest().authenticated())
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(withDefaults())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/auth/register", "/auth/authenticate", "/auth/login", "/auth/{username}", "/review/content/{contentId}").permitAll()
+                        .requestMatchers("/review/all", "/auth/admin").hasAuthority("ADMIN")
+                        .requestMatchers("/auth/user", "/review/add").hasAuthority("USER")
+                        .anyRequest().authenticated())
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 //                .authenticationProvider(authenticationProvider()) not needed
