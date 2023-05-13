@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/register", "/auth/authenticate", "/auth/login", "/auth/{username}", "/review/content/{contentId}").permitAll()
+                        .requestMatchers("/auth/register", "/auth/authenticate", "/auth/login", "/auth/{username}", "/review/content/{contentId}", "/auth/preferences/{emailPreferences}").permitAll()
                         .requestMatchers("/review/all", "/auth/admin").hasAuthority("ADMIN")
                         .requestMatchers("/auth/user", "/review/add").hasAuthority("USER")
                         .anyRequest().authenticated())

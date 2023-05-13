@@ -30,7 +30,7 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-//    public List<User> getUserForPreference(String emailPreferences) {
-//        return userRepository.findByEmailPreferences(emailPreferences);
-//    }
+    public List<User> getUserForPreference(String emailPreferences) {
+        return userRepository.findByEmailPreferences(emailPreferences);
+    }
 }

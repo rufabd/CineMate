@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
-import java.nio.file.AccessDeniedException;
+import org.springframework.web.server.ResponseStatusException;
 import java.security.Key;
 import java.util.Base64;
 
@@ -30,13 +30,10 @@ public class WatchlistAuthorizationFilter extends AbstractGatewayFilterFactory<W
             if(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION) != null) {
 //                System.out.println(routeValidator.reviewSecuredRole(exchange.getRequest()));
                 if(routeValidator.watchlistSecuredRole(exchange.getRequest()) != null) {
-                    if(routeValidator.watchlistSecuredRole(exchange.getRequest()).contains(extractRole(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0)))) {
-                        System.out.println("Authorization is righttttt");
-                    }
-                    else {
+                    if(!routeValidator.watchlistSecuredRole(exchange.getRequest()).contains(extractRole(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0)))) {
                         try {
-                            throw  new AccessDeniedException("This route is protected. No entry for you aq");
-                        } catch (AccessDeniedException e) {
+                            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission to access this resource.");
+                        } catch (RuntimeException e) {
                             throw new RuntimeException(e);
                         }
                     }

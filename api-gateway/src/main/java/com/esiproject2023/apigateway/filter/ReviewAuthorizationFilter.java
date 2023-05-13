@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.http.HttpHeaders;
-
-import java.nio.file.AccessDeniedException;
+import org.springframework.web.server.ResponseStatusException;
 import java.security.Key;
 import java.util.Base64;
 
@@ -32,15 +32,10 @@ public class ReviewAuthorizationFilter extends AbstractGatewayFilterFactory<Revi
             if(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION) != null) {
 //                System.out.println(routeValidator.reviewSecuredRole(exchange.getRequest()));
                 if(routeValidator.reviewSecuredRole(exchange.getRequest()) != null) {
-                    log.info("My method roleee is {}", routeValidator.reviewSecuredRole(exchange.getRequest()));
-                    log.info("Request roleee is {}", extractRole(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0)));
-                    if(routeValidator.reviewSecuredRole(exchange.getRequest()).contains(extractRole(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0)))) {
-                        System.out.println("Authorization is righttttt");
-                    }
-                    else {
+                    if(!routeValidator.reviewSecuredRole(exchange.getRequest()).contains(extractRole(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0)))) {
                         try {
-                            throw  new AccessDeniedException("This route is protected. No entry for you aq");
-                        } catch (AccessDeniedException e) {
+                            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have permission to access this resource.");
+                        } catch (RuntimeException e) {
                             throw new RuntimeException(e);
                         }
                     }
