@@ -41,10 +41,9 @@ public class JwtService {
         // Retrieve the user ID from the systemUserDetailsService
         Long userId = user.getId();
         LocalDate dob = LocalDate.parse(user.getDob());
-        String formattedDob = dob.format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+        String formattedDob = dob.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String favGenre = user.getFavGenre();
         String minRating = user.getMinRating();
-        // yyyy-mm-dd => mm-dd-yyyy
 
 
         // Add the user ID to the claims map
