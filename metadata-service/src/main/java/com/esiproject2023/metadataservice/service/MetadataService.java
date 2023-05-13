@@ -111,8 +111,7 @@ public class MetadataService {
     }
 
     public Metadata[] processResponse(String response) {
-        if (!response.equals("") && !response.equals("{}") && !response.equals("You are not subscribed to this API.")) {
-            log.info(response);
+        if (!response.equals("") && !response.equals("{}") && !response.contains("API is unreachable") && !response.contains("You are not subscribed to this API.")) {            log.info(response);
             JsonArray results = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("results");
             List<Metadata> metadataList = new ArrayList<>();
 

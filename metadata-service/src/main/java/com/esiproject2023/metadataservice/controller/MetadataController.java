@@ -31,7 +31,7 @@ public class MetadataController {
         this.dataService = dataService;
     }
 
-    @Scheduled(cron = "0 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     @GetMapping("/search")
     public ResponseEntity<Metadata[]> getAllMetadata() {
         try {

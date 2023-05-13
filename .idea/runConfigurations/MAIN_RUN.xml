@@ -7,6 +7,7 @@
     <toRun name="EmailServiceApplication" type="SpringBootApplicationConfigurationType" />
     <toRun name="MetadataServiceApplication" type="SpringBootApplicationConfigurationType" />
     <toRun name="ReviewServiceApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="UserProfileServiceApplication" type="SpringBootApplicationConfigurationType" />
     <toRun name="WatchlistServiceApplication" type="SpringBootApplicationConfigurationType" />
     <method v="2" />
   </configuration>
