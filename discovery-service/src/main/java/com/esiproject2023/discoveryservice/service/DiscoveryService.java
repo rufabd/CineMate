@@ -71,7 +71,7 @@ public class DiscoveryService {
     }
 
     private int ageCalculator(String dateOfBirth) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dob = LocalDate.parse(dateOfBirth, formatter);
 
         LocalDate currentDate = LocalDate.now();

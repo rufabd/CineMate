@@ -74,8 +74,8 @@ public class UserController {
         return userService.getUserInfoForUsername(username);
     }
 
-//    @GetMapping("/{emailPreferences}")
-//    public List<User> getUsersForPreferences(@PathVariable String emailPreferences) {
-//        return userService.getUserForPreference(emailPreferences);
-//    }
+    @GetMapping("/preferences/{emailPreferences}")
+    public List<User> getUsersForPreferences(@PathVariable String emailPreferences) {
+        return userService.getUserForPreference(emailPreferences);
+    }
 }
