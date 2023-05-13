@@ -1,6 +1,8 @@
 package com.esiproject2023.authservice.jwt;
 
+import com.esiproject2023.authservice.config.SystemUserDetails;
 import com.esiproject2023.authservice.config.SystemUserDetailsService;
+import com.esiproject2023.authservice.users.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 
@@ -31,14 +35,21 @@ public class JwtService {
     }
 
     private String createToken(Map<String, Object> claims, String username) {
-        UserDetails systemUserDetails = systemUserDetailsService.loadUserByUsername(username);
+        SystemUserDetails systemUserDetails = (SystemUserDetails) systemUserDetailsService.loadUserByUsername(username);
         Collection<? extends GrantedAuthority> role = systemUserDetails.getAuthorities();
-
+        User user = systemUserDetails.getUser();
         // Retrieve the user ID from the systemUserDetailsService
-        Long userId = systemUserDetailsService.getUserIdByUsername(username);
+        Long userId = user.getId();
+        LocalDate dob = LocalDate.parse(user.getDob());
+        String formattedDob = dob.format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+        String favGenre = user.getFavGenre();
+        String minRating = user.getMinRating();
+        // yyyy-mm-dd => mm-dd-yyyy
+
 
         // Add the user ID to the claims map
         claims.put("id", userId);
+        claims.put("params", String.format("%s,%s,%s", formattedDob, favGenre, minRating));
 
         String roleClaim = role.toString();
         log.info("roleClaim: {}", roleClaim);
@@ -47,6 +58,7 @@ public class JwtService {
         roleClaim = roleClaim.substring(start + 1, end);
         log.info("claims: {}", roleClaim);
         claims.put("role", roleClaim);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
