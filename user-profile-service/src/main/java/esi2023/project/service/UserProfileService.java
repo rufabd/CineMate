@@ -25,8 +25,8 @@ public class UserProfileService {
     /**
      * runs at 9:00 AM daily to check which users should be emailed
      */
-//    @Scheduled(cron = "0 0 9 * * *")
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(cron = "0 0 9 * * *")
+//    @Scheduled(fixedDelay = 1000)
     public void sendEmails() {
         UserProfile[] dailyUsers = webClient.build().get().uri("http://auth-service/auth/{emailPreferences}", "daily").retrieve().bodyToMono(UserProfile[].class).block();
 //        var dailyUsers = UserProfileFactory.getRandomUserProfiles(32, "daily");

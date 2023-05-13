@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MetadataService {
@@ -109,9 +111,15 @@ public class MetadataService {
     }
 
     public Metadata[] processResponse(String response) {
-        if (!response.equals("") && !response.equals("{}")) {
+        if (!response.equals("") && !response.equals("{}") && !response.equals("You are not subscribed to this API.")) {
+            log.info(response);
             JsonArray results = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("results");
             List<Metadata> metadataList = new ArrayList<>();
+
+            if(results == null) {
+                return new Metadata[0];
+            }
+
             for (int i = 0; i < results.size(); i++) {
                 JsonObject result = results.get(i).getAsJsonObject();
                 String id = result.get("id").getAsString();
