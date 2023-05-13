@@ -10,6 +10,7 @@ import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -30,6 +31,7 @@ public class MetadataController {
         this.dataService = dataService;
     }
 
+    @Scheduled(cron = "0 * * * *")
     @GetMapping("/search")
     public ResponseEntity<Metadata[]> getAllMetadata() {
         try {
