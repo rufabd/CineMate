@@ -21,6 +21,6 @@ public class UserProfileController {
 
     @PostMapping("/sendRecommendations")
     public List<UserProfile> sendRecommendations() {
-        return service.getUsersDaily();
+        return service.getUsersOncePerWeek();
     }
 }
