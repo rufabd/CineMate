@@ -1,21 +1,22 @@
-package com.esiproject2023.metadataservice.service;
+package com.esiproject2023.metadatabackup.service;
 
-import com.esiproject2023.metadataservice.model.Metadata;
+import com.esiproject2023.metadatabackup.model.Metadata;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -30,6 +31,11 @@ public class MetadataService {
     @Value("${app.API_Host}")
     private String API_Host;
 
+    private final KafkaTemplate<String, HashMap> kafkaTemplate;
+
+    @Autowired
+    private Gson gson;
+
     public String getResponseWithParams(String params) throws Exception {
         StringBuilder restUrl = new StringBuilder();
         restUrl.append(API_URL);
@@ -37,6 +43,8 @@ public class MetadataService {
             restUrl.append("/search/title/");
             restUrl.append(params.substring(3));
 
+        } else if(params.equals("/utils/genres")) {
+            restUrl.append(params);
         } else restUrl.append("?").append(params);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -110,12 +118,18 @@ public class MetadataService {
         return response.body();
     }
 
-    public Metadata[] processResponse(String response) {
-        if (!response.equals("") && !response.equals("{}") && !response.contains("API is unreachable") && !response.contains("You are not subscribed to this API.")) {            log.info(response);
+    public Metadata[] processResponse(String response, String path) {
+        HashMap<String, String> obj = new HashMap<>();
+        obj.put("path", path);
+
+        if (!response.contains("API is unreachable") && !response.contains("You are not subscribed to this API.")) {
+            log.info(response);
             JsonArray results = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("results");
             List<Metadata> metadataList = new ArrayList<>();
 
-            if(results == null) {
+            if (results.isEmpty() && !response.equals("") && !response.equals("{}")) {
+                obj.put("response", gson.toJson(new Metadata[0]));
+                kafkaTemplate.send("backupRequest", obj);
                 return new Metadata[0];
             }
 
@@ -178,9 +192,57 @@ public class MetadataService {
                 Metadata metadata = new Metadata(id, titleText, rating, allCasts.toString(), description, allGenres.toString(), imageURL, releaseDate, director); //, genre, releaseDate, organization, awards.toArray(new String[0])
                 metadataList.add(metadata);
             }
-            return metadataList.toArray(new Metadata[0]);
+
+            Metadata[] result = metadataList.toArray(new Metadata[0]);
+            obj.put("response", gson.toJson(result));
+            kafkaTemplate.send("backupRequest", obj);
+
+            return result;
         } else {
+            obj.put("response", gson.toJson(new Metadata[0]));
+            kafkaTemplate.send("backupRequest", obj);
+
             return new Metadata[0];
+        }
+    }
+
+    public List<String> processGenresResponse(String response) {
+
+        List<String> checkList = Arrays.asList("musicVideo", "podcastEpisode", "podcastSeries", "videoGame", "video");
+        HashMap<String, String> obj = new HashMap<>();
+        obj.put("path", "/genres");
+
+        if (!response.contains("API is unreachable") && !response.contains("You are not subscribed to this API.")) {
+            log.info(response);
+            JsonArray results = JsonParser.parseString(response).getAsJsonObject().get("results").getAsJsonArray();
+            List<String> genres = new ArrayList<>();
+
+            if (results.isEmpty() && !response.equals("") && !response.equals("{}")) {
+                obj.put("response", gson.toJson(new ArrayList<>()));
+                kafkaTemplate.send("backupRequest", obj);
+                return new ArrayList<>();
+            }
+            log.info("Passed null conditions: " + results);
+
+            for (int i = 0; i < results.size(); i++) {
+                if(!results.get(i).isJsonNull()) {
+                    log.info("here it comes");
+                    String result = results.get(i).getAsJsonPrimitive().getAsString();
+                    log.info("here it comes" + result);
+                    if (!checkList.contains(result)) genres.add(result);
+                }
+            }
+            log.info("Entered loop null conditions: " + genres);
+
+            obj.put("response", gson.toJson(genres));
+            kafkaTemplate.send("backupRequest", obj);
+
+            return genres;
+        } else {
+            obj.put("response", gson.toJson(new ArrayList<>()));
+            kafkaTemplate.send("backupRequest", obj);
+
+            return new ArrayList<>();
         }
     }
 

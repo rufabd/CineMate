@@ -1,6 +1,6 @@
-package com.esiproject2023.metadataservice.repository;
+package com.esiproject2023.metadatabackup.repository;
 
-import com.esiproject2023.metadataservice.model.MetadataEntry;
+import com.esiproject2023.metadatabackup.model.MetadataEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

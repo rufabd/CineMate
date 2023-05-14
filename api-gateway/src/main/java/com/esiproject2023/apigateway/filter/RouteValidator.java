@@ -20,7 +20,8 @@ public class RouteValidator {
             "auth/login",
             "auth/{username}",
             "review/content/{contentId}",
-            "auth/emailPreferences"
+            "auth/emailPreferences",
+            "metadata/search"
     );
     public static final Map<String, List<String>> reviewEndpointsSecured = Map.of("/review/all", List.of("ADMIN"), "/review/add",
             List.of("USER"), "/review/delete/", List.of("ADMIN"), "/review/view/", List.of("ADMIN"), "/review/content/", List.of("ADMIN", "USER"));

@@ -1,4 +1,4 @@
-package com.esiproject2023.metadataservice.model;
+package com.esiproject2023.metadatabackup.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

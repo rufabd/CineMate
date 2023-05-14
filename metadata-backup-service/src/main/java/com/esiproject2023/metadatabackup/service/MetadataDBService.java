@@ -1,13 +1,16 @@
-package com.esiproject2023.metadataservice.service;
+package com.esiproject2023.metadatabackup.service;
 
-import com.esiproject2023.metadataservice.model.Metadata;
-import com.esiproject2023.metadataservice.model.MetadataEntry;
-import com.esiproject2023.metadataservice.repository.MetadataRepository;
+import com.esiproject2023.metadatabackup.model.Metadata;
+import com.esiproject2023.metadatabackup.model.MetadataEntry;
+import com.esiproject2023.metadatabackup.repository.MetadataRepository;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -16,7 +19,7 @@ public class MetadataDBService {
     @Autowired
     private MetadataRepository metadataRepository;
 
-    public void addRequest(MetadataEntry metadataEntry) {
+    private void addRequest(MetadataEntry metadataEntry) {
         Optional<MetadataEntry> row =  metadataRepository.findByRequest(metadataEntry.getRequest());
         if(row.isEmpty()) {
             metadataRepository.save(metadataEntry);
@@ -29,7 +32,12 @@ public class MetadataDBService {
         }
     }
 
-    public void createRequest(String path, String response) {
+    @KafkaListener(topics = "backupRequest")
+    public void createRequest(HashMap<String,String> hashmap) {
+
+        String path = hashmap.get("path");
+        String response = hashmap.get("response");
+
         MetadataEntry metadataEntry = MetadataEntry.builder()
                 .response(response)
                 .request(path)
@@ -37,6 +45,7 @@ public class MetadataDBService {
         addRequest(metadataEntry);
     }
 
+    @KafkaListener(topics = "getBackup")
     public Metadata[] getMetadataFromBackup(String request) {
         Optional<MetadataEntry> row = metadataRepository.findByRequest(request);
         Gson gson = new Gson();

@@ -16,6 +16,7 @@
         <module name="user-profile-service" />
         <module name="metadata-service" />
         <module name="discovery-service" />
+        <module name="metadata-backup-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -26,6 +27,7 @@
       <module name="discovery-server" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
       <module name="email-service" options="-parameters" />
+      <module name="metadata-backup-service" options="-parameters" />
       <module name="metadata-service" options="-parameters" />
       <module name="review-service" options="-parameters" />
       <module name="user-profile-service" options="-parameters" />
