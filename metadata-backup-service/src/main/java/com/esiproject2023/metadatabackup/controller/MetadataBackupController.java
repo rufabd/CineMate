@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/metadata")
+@RequestMapping("/backup")
 public class MetadataBackupController {
 
     @Autowired
@@ -49,21 +49,5 @@ public class MetadataBackupController {
             return ResponseEntity.badRequest().build();
         }
     }
-//
-//    @GetMapping("/searchByParams/{params}")
-//    public ResponseEntity<Metadata[]> getRequiredMetadata(@PathVariable String params) {
-//        try {
-//
-//            if (allMetadata.length != 0) {
-//                metadataDBService.createRequest("/searchByParams/" + params, gson.toJson(allMetadata));
-//            } else {
-//                allMetadata = metadataDBService.getMetadataFromBackup("/searchByParams/" + params);
-//            }
-//            return ResponseEntity.ok(allMetadata);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
 
 }
