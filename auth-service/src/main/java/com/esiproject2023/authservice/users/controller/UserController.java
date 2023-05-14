@@ -4,6 +4,7 @@ package com.esiproject2023.authservice.users.controller;
 import com.esiproject2023.authservice.jwt.JwtService;
 import com.esiproject2023.authservice.users.dto.UserDto;
 import com.esiproject2023.authservice.users.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -74,8 +75,8 @@ public class UserController {
         return userService.getUserInfoForUsername(username);
     }
 
-    @GetMapping("/preferences/{emailPreferences}")
-    public List<User> getUsersForPreferences(@PathVariable String emailPreferences) {
-        return userService.getUserForPreference(emailPreferences);
+    @PostMapping("/emailPreferences")
+    public List<User> getUsersForPreferences(@RequestBody String preferences) {
+        return userService.getUserForPreference(preferences);
     }
 }
