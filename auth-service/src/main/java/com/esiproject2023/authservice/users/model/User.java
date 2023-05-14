@@ -44,4 +44,7 @@ public class User {
 
     @Column(name = "emailPreferences", nullable = false)
     private String emailPreferences;
+
+    @Column(name = "lastEmailSent")
+    private String lastEmailSent;
 }

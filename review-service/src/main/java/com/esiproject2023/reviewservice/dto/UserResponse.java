@@ -18,4 +18,5 @@ public class UserResponse {
     String dob;
     String minRating;
     String emailPreferences;
+    String lastEmailSent;
 }
