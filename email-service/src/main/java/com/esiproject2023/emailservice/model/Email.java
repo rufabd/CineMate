@@ -19,19 +19,16 @@ public class Email {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name = "userEmail", nullable = false)
     private String user_email;
-
     @Column(name = "title", nullable = false)
     private String title;
-
     @Column(name = "subject", nullable = false)
     private String subject;
-
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
-
     @Column(name = "created", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp timestamp;
+    @Column(name = "type", nullable = false)
+    private String type;
 }

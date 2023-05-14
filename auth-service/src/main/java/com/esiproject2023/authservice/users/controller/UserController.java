@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import com.esiproject2023.authservice.users.model.User;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,5 +79,15 @@ public class UserController {
     @PostMapping("/emailPreferences")
     public List<User> getUsersForPreferences(@RequestBody String preferences) {
         return userService.getUserForPreference(preferences);
+    }
+
+    @PostMapping("/update/lastEmail")
+    public void updateUserLastEmailSent(@RequestBody String email) throws ParseException {
+        userService.updateUserLastEmailSent(email);
+    }
+
+    @PostMapping("/update/profile")
+    public String updateUserProfile(@RequestBody User user) {
+        return userService.updateUserProfileInfo(user);
     }
 }
