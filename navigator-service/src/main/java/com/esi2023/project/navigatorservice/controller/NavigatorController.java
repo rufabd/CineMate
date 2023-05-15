@@ -60,4 +60,16 @@ public class NavigatorController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+
+    @GetMapping("/searchByParams/{params}")
+    public ResponseEntity<String> getRequiredMetadata(@PathVariable String params) {
+        try {
+            String response = navigatorService.searchByParams("searchByParams", params);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

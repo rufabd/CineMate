@@ -34,6 +34,19 @@ public class MetadataController {
         }
     }
 
+    @GetMapping("/searchByParams/{params}")
+    public ResponseEntity<Metadata[]> getRequiredMetadata(@PathVariable String params) {
+        try {
+            String response = dataService.getResponseWithParams(params);
+            String path = "searchByParams-" + params;
+            Metadata[] allMetadata = dataService.processResponse(response, path);
+            return ResponseEntity.ok(allMetadata);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @GetMapping("/searchByIDs/{params}")
     public ResponseEntity<Metadata[]> getAllMetadataByIDs(@PathVariable String params) {
         try {
