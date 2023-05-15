@@ -43,7 +43,7 @@ public class ReviewService {
                     userResponse.getEmail(),
                     "Thank you very much for your review!", "You have added review",
                     "\nYou have recently added review/rating to the content " + response[0].getTitle() + "\n\nWe really appreciate your time spent for making CineMate" +
-                            " better place for entertainment industry!\n\nSincerely,\nTeam CineMate!");
+                            " better place for entertainment industry!\n\nSincerely,\nTeam CineMate!", "review");
             reviewRepository.save(review);
             log.info("The review with id {} is added", review.getId());
             kafkaTemplate.send("emailTopic", emailRequest);
@@ -101,7 +101,7 @@ public class ReviewService {
                                     " adding reviews/ratings for the content. We always try to keep our platform safe and friendly for everyone.\n\n" +
                                     "Unfortunately, we will have to ban you from the platform in case of repetition of such case.\n\n" +
                                     "Thank you for your understanding and cooperation.\n\n"+ "Your deleted review for the content was like:\n" + "'" + reviewToBeDeleted.get().getBody() + "'" +
-                                    "\n\nSincerely,\nTeam CineMate!");
+                                    "\n\nSincerely,\nTeam CineMate!", "review");
                     reviewRepository.deleteById(id);
                     log.info("Review with id {} has been deleted", id);
                     kafkaTemplate.send("emailTopic", emailRequest);

@@ -7,8 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -32,5 +37,46 @@ public class UserService {
 
     public List<User> getUserForPreference(String emailPreferences) {
         return userRepository.findByEmailPreferences(emailPreferences);
+    }
+
+//    public Optional<User> getUserForEmail(String email) {
+//        userRepository.
+//    }
+
+    public void updateUserLastEmailSent(String email) throws ParseException {
+        Optional<User> user = userRepository.findByEmail(email);
+        if(user.isPresent()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = sdf.parse(LocalDate.now().toString());
+            user.get().setLastEmailSent(now.toString());
+            userRepository.save(user.get());
+        }
+    }
+
+    public String updateUserProfileInfo(User user) {
+        Optional<User> requiredUser = userRepository.findByUsername(user.getUsername());
+        if(requiredUser.isPresent()) {
+            requiredUser.get().setFullName(user.getFullName());
+            requiredUser.get().setUsername(requiredUser.get().getUsername());
+            requiredUser.get().setEmail(user.getEmail());
+            requiredUser.get().setPassword(passwordEncoder.encode(user.getPassword()));
+            requiredUser.get().setRole(requiredUser.get().getRole());
+            requiredUser.get().setDob(user.getDob());
+            if(requiredUser.get().getRole().equals("USER")) {
+                requiredUser.get().setFavGenre(user.getFavGenre());
+                requiredUser.get().setMinRating(user.getMinRating());
+                requiredUser.get().setEmailPreferences(user.getEmailPreferences());
+                requiredUser.get().setLastEmailSent(requiredUser.get().getLastEmailSent());
+            } else {
+                requiredUser.get().setFavGenre(requiredUser.get().getFavGenre());
+                requiredUser.get().setMinRating(requiredUser.get().getMinRating());
+                requiredUser.get().setEmailPreferences(requiredUser.get().getEmailPreferences());
+                requiredUser.get().setLastEmailSent(requiredUser.get().getLastEmailSent());
+            }
+            userRepository.save(requiredUser.get());
+            return "Success";
+        } else {
+            return "Fail";
+        }
     }
 }

@@ -20,7 +20,7 @@ public class UserProfileController {
     private final UserProfileService service;
 
     @PostMapping("/sendRecommendations")
-    public List<UserProfile> sendRecommendations() {
-        return service.getUsersOncePerWeek();
+    public void sendRecommendations() {
+        service.sendEmailsToUsers();
     }
 }

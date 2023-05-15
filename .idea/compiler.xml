@@ -15,6 +15,7 @@
         <module name="watchlist-service" />
         <module name="user-profile-service" />
         <module name="metadata-service" />
+        <module name="metadata-service (1)" />
         <module name="discovery-service" />
         <module name="metadata-backup-service" />
       </profile>
@@ -29,6 +30,7 @@
       <module name="email-service" options="-parameters" />
       <module name="metadata-backup-service" options="-parameters" />
       <module name="metadata-service" options="-parameters" />
+      <module name="metadata-service (1)" options="-parameters" />
       <module name="review-service" options="-parameters" />
       <module name="user-profile-service" options="-parameters" />
       <module name="watchlist-service" options="-parameters" />

@@ -8,5 +8,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-public record UserProfile(String username, String email, String fullName, String dob, String emailPreferences, String favGenre, String lastEmailSent) { }
+public record UserProfile(String username, String email, String fullName, String dob, String emailPreferences, String favGenre, String lastEmailSent, String minRating) { }
 
