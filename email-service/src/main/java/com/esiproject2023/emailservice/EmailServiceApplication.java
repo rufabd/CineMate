@@ -17,6 +17,7 @@ public class EmailServiceApplication {
 		return WebClient.builder();
 	}
 	public static void main(String[] args) {
+		DatabaseInitializer.initialize("db_emails");
 		SpringApplication.run(EmailServiceApplication.class, args);
 	}
 }

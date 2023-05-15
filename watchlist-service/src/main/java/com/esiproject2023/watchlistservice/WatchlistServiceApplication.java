@@ -18,6 +18,7 @@ public class WatchlistServiceApplication {
 	}
 
 	public static void main(String[] args) {
+		DatabaseInitializer.initialize("db_watchlists");
 		SpringApplication.run(WatchlistServiceApplication.class, args);
 	}
 }
