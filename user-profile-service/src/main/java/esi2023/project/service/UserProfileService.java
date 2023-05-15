@@ -41,8 +41,7 @@ public class UserProfileService {
         if(response != null) {
             Stream<UserProfile> filteredList = Arrays.stream(response).filter(user -> {
                 try {
-                    return user.lastEmailSent()==null ||
-                            dateChecker(user.lastEmailSent(), 7);
+                    return dateChecker(user.lastEmailSent(), 7);
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
@@ -69,41 +68,76 @@ public class UserProfileService {
     }
 
     public void sendEmailsToUsers() {
-        List<UserProfile> finalListDaily = getUsersDaily();
-        for (UserProfile userProfile : finalListDaily) {
-            DiscoveryRequest discoveryRequest = new DiscoveryRequest(userProfile.dob(), userProfile.favGenre(), userProfile.minRating());
-            Content[] content = webClient.build().get().uri("http://discovery-service/discovery/{params}", discoveryRequest.getDob()+","+discoveryRequest
-                    .getGenre()+","+discoveryRequest.getRating()).retrieve().bodyToMono(Content[].class).block();
-            if (content != null) {
-//                    Send email here
-                String emailType;
-                if(userProfile.emailPreferences().equals("daily")) emailType = "discoveryDaily";
-                else emailType = "discovery";
-                EmailRequest emailRequest = new EmailRequest(
-                        userProfile.email(),
-                        "Hello, dear user and subscriber!\n", "Your daily content recommendation",
-                        "\nYour daily content recommendation is here! For your taste, we recommend you to check " + content[0].title() + ".\n" +
-                                "\n" + content[0].description() + "\n\n" +
-                                "The cast includes popular actors and actresses like " + content[0].cast() + "\n\n" +
-                                content[0].poster() +
-                                "\n\nGenre: " + content[0].genre() + "\n\n" +
-                                "Rating: " + content[0].rating() + "\n" +
-                                "Director: " + content[0].director() + "\n" +
-                                "Release date: " + content[0].release_date() + "\n\n" +
-                                "Thank you very much for subscribing to our newsletter. We always try to develop our platform, so thank you very much for supporting us!" + "\n\n" +
-                                "We wish you to have a nice day!" +
-                                "\n\n" + "Sincerely,\n" + "Rufat Abdullayev | Team CineMate", emailType);
-                kafkaTemplate.send("discoveryTopic", emailRequest);
+        List<List<UserProfile>> wholeList = new ArrayList<>();
+        wholeList.add(getUsersDaily());
+        wholeList.add(getUsersOncePerWeek());
+        wholeList.add(getUsersoncePerMonth());
+        for (List<UserProfile> userProfiles : wholeList) {
+            for (UserProfile userProfile : userProfiles) {
+                DiscoveryRequest discoveryRequest = new DiscoveryRequest(userProfile.dob(), userProfile.favGenre(), userProfile.minRating());
+                Content[] content = webClient.build().get().uri("http://discovery-service/discovery/{params}", discoveryRequest.getDob() + "," + discoveryRequest
+                        .getGenre() + "," + discoveryRequest.getRating()).retrieve().bodyToMono(Content[].class).block();
+                if (content != null) {
+                    String emailType;
+                    if (userProfile.emailPreferences().equals("daily")) emailType = "discoveryDaily";
+                    else emailType = "discovery";
+                    EmailRequest emailRequest = new EmailRequest(
+                            userProfile.email(),
+                            "Hello, dear user and subscriber!\n", "Your daily content recommendation",
+                            "\nYour daily content recommendation is here! For your taste, we recommend you to check " + content[0].title() + ".\n" +
+                                    "\n" + content[0].description() + "\n\n" +
+                                    "The cast includes popular actors and actresses like " + content[0].cast() + "\n\n" +
+                                    content[0].poster() +
+                                    "\n\nGenre: " + content[0].genre() + "\n\n" +
+                                    "Rating: " + content[0].rating() + "\n" +
+                                    "Director: " + content[0].director() + "\n" +
+                                    "Release date: " + content[0].release_date() + "\n\n" +
+                                    "Thank you very much for subscribing to our newsletter. We always try to develop our platform, so thank you very much for supporting us!" + "\n\n" +
+                                    "We wish you to have a nice day!" +
+                                    "\n\n" + "Sincerely,\n" + "Rufat Abdullayev | Team CineMate", emailType
+                    );
+                    kafkaTemplate.send("discoveryTopic", emailRequest);
+                }
             }
         }
+//        List<UserProfile> finalListDaily = getUsersDaily();
+//        for (UserProfile userProfile : finalListDaily) {
+//            DiscoveryRequest discoveryRequest = new DiscoveryRequest(userProfile.dob(), userProfile.favGenre(), userProfile.minRating());
+//            Content[] content = webClient.build().get().uri("http://discovery-service/discovery/{params}", discoveryRequest.getDob()+","+discoveryRequest
+//                    .getGenre()+","+discoveryRequest.getRating()).retrieve().bodyToMono(Content[].class).block();
+//            if (content != null) {
+////                    Send email here
+//                String emailType;
+//                if(userProfile.emailPreferences().equals("daily")) emailType = "discoveryDaily";
+//                else emailType = "discovery";
+//                EmailRequest emailRequest = new EmailRequest(
+//                        userProfile.email(),
+//                        "Hello, dear user and subscriber!\n", "Your daily content recommendation",
+//                        "\nYour daily content recommendation is here! For your taste, we recommend you to check " + content[0].title() + ".\n" +
+//                                "\n" + content[0].description() + "\n\n" +
+//                                "The cast includes popular actors and actresses like " + content[0].cast() + "\n\n" +
+//                                content[0].poster() +
+//                                "\n\nGenre: " + content[0].genre() + "\n\n" +
+//                                "Rating: " + content[0].rating() + "\n" +
+//                                "Director: " + content[0].director() + "\n" +
+//                                "Release date: " + content[0].release_date() + "\n\n" +
+//                                "Thank you very much for subscribing to our newsletter. We always try to develop our platform, so thank you very much for supporting us!" + "\n\n" +
+//                                "We wish you to have a nice day!" +
+//                                "\n\n" + "Sincerely,\n" + "Rufat Abdullayev | Team CineMate", emailType);
+//                kafkaTemplate.send("discoveryTopic", emailRequest);
+//            }
+//        }
     }
 
     public boolean dateChecker(String lastEmailSent, int daysShouldBePassed) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date now = sdf.parse(LocalDate.now().toString());
-        Date userEmailLastSent = sdf.parse(lastEmailSent);
-        long diffInMillis = Math.abs(now.getTime() - userEmailLastSent.getTime());
-        long diff = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
-        return diff == daysShouldBePassed;
+        if(!lastEmailSent.equals("")) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = sdf.parse(LocalDate.now().toString());
+            Date userEmailLastSent = sdf.parse(lastEmailSent);
+            long diffInMillis = Math.abs(now.getTime() - userEmailLastSent.getTime());
+            long diff = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+            return diff == daysShouldBePassed;
+        }
+        else return true;
     }
 }
