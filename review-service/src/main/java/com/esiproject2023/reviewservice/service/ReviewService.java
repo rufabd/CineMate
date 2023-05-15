@@ -36,7 +36,7 @@ public class ReviewService {
                 .score(reviewDto.getScore())
                 .build();
 
-        MetadataResponse[] response = webClient.build().get().uri("http://metadata-service/metadata/searchByIDs/{ids}", review.getContentId()).retrieve().bodyToMono(MetadataResponse[].class).block();
+        MetadataResponse[] response = webClient.build().get().uri("http://backup-service/navigator/searchByIDs/{params}", review.getContentId()).retrieve().bodyToMono(MetadataResponse[].class).block();
         UserResponse userResponse = webClient.build().get().uri("http://auth-service/auth/{username}", review.getUserId()).retrieve().bodyToMono(UserResponse.class).block();
         if(response != null && userResponse != null) {
             EmailRequest emailRequest = new EmailRequest(
@@ -90,7 +90,7 @@ public class ReviewService {
         if(reviewToBeDeleted.isPresent()) {
             String contentIdForDeletedReview = reviewToBeDeleted.get().getContentId();
             if(contentIdForDeletedReview != null) {
-                response = webClient.build().get().uri("http://metadata-service/metadata/searchByIDs/{ids}", contentIdForDeletedReview).retrieve().bodyToMono(MetadataResponse[].class).block();
+                response = webClient.build().get().uri("http://backup-service/navigator/searchByIDs/{params}", contentIdForDeletedReview).retrieve().bodyToMono(MetadataResponse[].class).block();
                 UserResponse userResponse = webClient.build().get().uri("http://auth-service/auth/{username}", reviewToBeDeleted.get().getUserId()).retrieve().bodyToMono(UserResponse.class).block();
                 if(response != null && userResponse != null) {
                     //           Dynamic email here, once User Auth is done.
