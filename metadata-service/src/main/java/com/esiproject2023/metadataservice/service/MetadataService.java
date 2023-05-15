@@ -108,7 +108,7 @@ public class MetadataService {
 
     public String getResponse() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(API_URL + "?info=custom_info"))
+                .uri(URI.create(API_URL + "?info=custom_info&limit=30"))
                 .header("content-type", contentType)
                 .header("X-RapidAPI-Key", API_Key)
                 .header("X-RapidAPI-Host", API_Host)
