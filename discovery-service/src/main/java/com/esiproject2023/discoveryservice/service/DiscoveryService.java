@@ -98,16 +98,16 @@ public class DiscoveryService {
 
     private String createConfig(String titleType, String genre, String list, String sort, String year, String endYear, String startYear, String page, int limit) {
         LinkedHashMap<String, String> parameterTypes = new LinkedHashMap<String, String>();
-        parameterTypes.put("titleType", titleType.equals("no") ? "" : titleType);
-        parameterTypes.put("genre", genre.equals("no")? "" : genre);
-        parameterTypes.put("list", list.equals("no")? "" : list);
-        parameterTypes.put("sort", sort.equals("no")? "" : sort);
-        parameterTypes.put("limit", limit != 0 ? Integer.toString(limit) : "30");
-        parameterTypes.put("endYear", endYear.equals("no")? "" : endYear);
-        parameterTypes.put("year", year.equals("no")? "" : year);
-        parameterTypes.put("info", "custom_info");
-        parameterTypes.put("page", page.equals("no")? "" : page);
         parameterTypes.put("startYear", startYear.equals("no")? "" : startYear);
+        parameterTypes.put("info", "custom_info");
+        parameterTypes.put("genre", genre.equals("no")? "" : genre);
+        parameterTypes.put("page", page.equals("no")? "" : page);
+        parameterTypes.put("year", year.equals("no")? "" : year);
+        parameterTypes.put("sort", sort.equals("no")? "" : sort);
+        parameterTypes.put("endYear", endYear.equals("no")? "" : endYear);
+        parameterTypes.put("list", list.equals("no")? "" : list);
+        parameterTypes.put("limit", limit != 0 ? Integer.toString(limit) : "30");
+        parameterTypes.put("titleType", titleType.equals("no") ? "" : titleType);
 
         StringBuilder queryStringBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : parameterTypes.entrySet()) {

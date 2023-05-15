@@ -24,6 +24,8 @@
         <module>api-gateway</module>
         <module>user-profile-service</module>
         <module>auth-service</module>
+        <module>navigator-service</module>
+        <module>backup-service</module>
     </modules>
 
     <properties>

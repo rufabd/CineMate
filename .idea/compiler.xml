@@ -7,20 +7,23 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="navigator-service" />
         <module name="auth-service" />
         <module name="discovery-server" />
         <module name="review-service" />
         <module name="email-service" />
         <module name="api-gateway" />
+        <module name="backup-service" />
         <module name="watchlist-service" />
         <module name="user-profile-service" />
         <module name="metadata-service" />
         <module name="metadata-service (1)" />
         <module name="discovery-service" />
-        <module name="metadata-backup-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="metadata-backup" target="17" />
+      <module name="metadata-backup-service" target="17" />
       <module name="metadata-navigator" target="17" />
     </bytecodeTargetLevel>
   </component>
@@ -28,12 +31,15 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="auth-service" options="-parameters" />
+      <module name="backup-service" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
       <module name="email-service" options="-parameters" />
+      <module name="metadata-backup" options="-parameters" />
       <module name="metadata-backup-service" options="-parameters" />
       <module name="metadata-service" options="-parameters" />
       <module name="metadata-service (1)" options="-parameters" />
+      <module name="navigator-service" options="-parameters" />
       <module name="review-service" options="-parameters" />
       <module name="user-profile-service" options="-parameters" />
       <module name="watchlist-service" options="-parameters" />

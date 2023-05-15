@@ -199,10 +199,7 @@ public class MetadataService {
 
             return result;
         } else {
-            obj.put("response", gson.toJson(new Metadata[0]));
-            kafkaTemplate.send("backupRequest", obj);
-
-            return new Metadata[0];
+            throw new RuntimeException("API NOT RESPONDING");
         }
     }
 
@@ -210,7 +207,7 @@ public class MetadataService {
 
         List<String> checkList = Arrays.asList("musicVideo", "podcastEpisode", "podcastSeries", "videoGame", "video");
         HashMap<String, String> obj = new HashMap<>();
-        obj.put("path", "/genres");
+        obj.put("path", "genres");
 
         if (!response.contains("API is unreachable") && !response.contains("You are not subscribed to this API.")) {
             log.info(response);
@@ -239,10 +236,7 @@ public class MetadataService {
 
             return genres;
         } else {
-            obj.put("response", gson.toJson(new ArrayList<>()));
-            kafkaTemplate.send("backupRequest", obj);
-
-            return new ArrayList<>();
+            throw new RuntimeException("API NOT RESPONDING");
         }
     }
 
