@@ -222,17 +222,17 @@ public class MetadataService {
                 kafkaTemplate.send("backupRequest", obj);
                 return new ArrayList<>();
             }
-            log.info("Passed null conditions: " + results);
+//            log.info("Passed null conditions: " + results);
 
             for (int i = 0; i < results.size(); i++) {
                 if(!results.get(i).isJsonNull()) {
-                    log.info("here it comes");
+//                    log.info("here it comes");
                     String result = results.get(i).getAsJsonPrimitive().getAsString();
-                    log.info("here it comes" + result);
+//                    log.info("here it comes" + result);
                     if (!checkList.contains(result)) genres.add(result);
                 }
             }
-            log.info("Entered loop null conditions: " + genres);
+//            log.info("Entered loop null conditions: " + genres);
 
             obj.put("response", gson.toJson(genres));
             kafkaTemplate.send("backupRequest", obj);

@@ -43,12 +43,15 @@ public class MetadataDBService {
                 .request(path)
                 .build();
         addRequest(metadataEntry);
+        log.info("Received Backup");
     }
 
     @KafkaListener(topics = "getBackup")
     public Metadata[] getMetadataFromBackup(String request) {
         Optional<MetadataEntry> row = metadataRepository.findByRequest(request);
         Gson gson = new Gson();
+        log.info("Used info from Backup");
+
         if (row.isPresent()) {
             return gson.fromJson(row.get().getResponse(), Metadata[].class);
         } else {

@@ -96,14 +96,10 @@ public class MetadataController {
             return ResponseEntity.badRequest().build();
         }
     }
-//    @GetMapping("/status")
-//    public ResponseEntity<String> getMicroserviceStatus(@PathVariable String id) {
-//        try {
-//            return ResponseEntity.badRequest().build();
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
+    @GetMapping("/status")
+    public ResponseEntity<String> getMicroserviceStatus() {
+            return ResponseEntity.ok("OK");
+    }
 
     @GetMapping("/genres")
     public ResponseEntity<String[]> getGenres() {
