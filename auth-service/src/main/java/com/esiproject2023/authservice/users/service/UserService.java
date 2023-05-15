@@ -57,13 +57,23 @@ public class UserService {
         Optional<User> requiredUser = userRepository.findByUsername(user.getUsername());
         if(requiredUser.isPresent()) {
             requiredUser.get().setFullName(user.getFullName());
+            requiredUser.get().setUsername(requiredUser.get().getUsername());
             requiredUser.get().setEmail(user.getEmail());
             requiredUser.get().setPassword(passwordEncoder.encode(user.getPassword()));
-            requiredUser.get().setFavGenre(user.getFavGenre());
-            requiredUser.get().setMinRating(user.getMinRating());
+            requiredUser.get().setRole(requiredUser.get().getRole());
             requiredUser.get().setDob(user.getDob());
-            requiredUser.get().setEmailPreferences(user.getEmailPreferences());
-            User savedUser = userRepository.save(requiredUser.get());
+            if(requiredUser.get().getRole().equals("USER")) {
+                requiredUser.get().setFavGenre(user.getFavGenre());
+                requiredUser.get().setMinRating(user.getMinRating());
+                requiredUser.get().setEmailPreferences(user.getEmailPreferences());
+                requiredUser.get().setLastEmailSent(requiredUser.get().getLastEmailSent());
+            } else {
+                requiredUser.get().setFavGenre(requiredUser.get().getFavGenre());
+                requiredUser.get().setMinRating(requiredUser.get().getMinRating());
+                requiredUser.get().setEmailPreferences(requiredUser.get().getEmailPreferences());
+                requiredUser.get().setLastEmailSent(requiredUser.get().getLastEmailSent());
+            }
+            userRepository.save(requiredUser.get());
             return "Success";
         } else {
             return "Fail";

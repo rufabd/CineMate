@@ -76,6 +76,9 @@ public class UserProfileService {
                     .getGenre()+","+discoveryRequest.getRating()).retrieve().bodyToMono(Content[].class).block();
             if (content != null) {
 //                    Send email here
+                String emailType;
+                if(userProfile.emailPreferences().equals("daily")) emailType = "discoveryDaily";
+                else emailType = "discovery";
                 EmailRequest emailRequest = new EmailRequest(
                         userProfile.email(),
                         "Hello, dear user and subscriber!\n", "Your daily content recommendation",
@@ -89,8 +92,8 @@ public class UserProfileService {
                                 "Release date: " + content[0].release_date() + "\n\n" +
                                 "Thank you very much for subscribing to our newsletter. We always try to develop our platform, so thank you very much for supporting us!" + "\n\n" +
                                 "We wish you to have a nice day!" +
-                                "\n\n" + "Sincerely," + "Rufat Abdullayev | Team CineMate", "discovery");
-                kafkaTemplate.send("emailTopic", emailRequest);
+                                "\n\n" + "Sincerely,\n" + "Rufat Abdullayev | Team CineMate", emailType);
+                kafkaTemplate.send("discoveryTopic", emailRequest);
             }
         }
     }

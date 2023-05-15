@@ -26,7 +26,7 @@ public class EmailService {
     @Autowired
     private WebClient.Builder webClient;
 
-    @KafkaListener(topics = "emailTopic")
+    @KafkaListener(topics = {"emailTopic", "discoveryTopic"})
     public EmailDto sendEmail(EmailDto emailDto) {
         Email email = Email.builder()
                 .user_email(emailDto.getUser_email())
