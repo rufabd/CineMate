@@ -64,7 +64,7 @@ public class DiscoveryService {
 
         // Get the top 10 contents
         List<Content> top10Contents = new ArrayList<>();
-        for (int i = 0; i < filteredContents.size() && i < 10; i++) {
+        for (int i = 0; i < filteredContents.size() && i < 20; i++) {
             top10Contents.add(filteredContents.get(i));
         }
         return top10Contents.toArray(new Content[0]);
@@ -102,7 +102,7 @@ public class DiscoveryService {
         parameterTypes.put("genre", genre.equals("no")? "" : genre);
         parameterTypes.put("list", list.equals("no")? "" : list);
         parameterTypes.put("sort", sort.equals("no")? "" : sort);
-        parameterTypes.put("limit", limit != 0 ?  Integer.toString(limit) : "");
+        parameterTypes.put("limit", limit != 0 ? Integer.toString(limit) : "30");
         parameterTypes.put("endYear", endYear.equals("no")? "" : endYear);
         parameterTypes.put("year", year.equals("no")? "" : year);
         parameterTypes.put("info", "custom_info");
