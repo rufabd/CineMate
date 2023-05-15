@@ -47,4 +47,8 @@ public class ReviewController {
     public List<Review> getUserWatchlist(@PathVariable String contentId) {
         return reviewService.getReviewsForSpecificContent(contentId);
     }
+    @PostMapping("/get/rating")
+    public Double updateUserProfile(@RequestBody String contentId) {
+        return reviewService.averageRating(contentId);
+    }
 }

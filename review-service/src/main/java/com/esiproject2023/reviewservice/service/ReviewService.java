@@ -115,4 +115,13 @@ public class ReviewService {
         return "Fail";
     }
 
+    public Double averageRating(String contentId) {
+        double averageRating = 0.0;
+        List<Review> listOfReviewsForContent = reviewRepository.findByContentId(contentId);
+        for(Review review : listOfReviewsForContent) {
+            averageRating += review.getScore();
+        }
+        return averageRating/listOfReviewsForContent.size();
+    }
+
 }

@@ -25,7 +25,8 @@ public class RouteValidator {
             "auth/update/profile"
     );
     public static final Map<String, List<String>> reviewEndpointsSecured = Map.of("/review/all", List.of("ADMIN"), "/review/add",
-            List.of("USER"), "/review/delete/", List.of("ADMIN"), "/review/view/", List.of("ADMIN"), "/review/content/", List.of("ADMIN", "USER"));
+            List.of("USER"), "/review/delete/", List.of("ADMIN"), "/review/view/", List.of("ADMIN"), "/review/content/", List.of("ADMIN", "USER"),
+            "/review/get/rating", List.of("USER"));
 
     public static final Map<String, List<String>> watchlistEndpointsSecured = Map.of("/watchlist/add", List.of("USER"), "/watchlist/get/",
             List.of("USER"), "/watchlist/delete/", List.of("USER"));
