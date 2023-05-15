@@ -1,6 +1,6 @@
-package com.esiproject2023.metadatabackup.service;
+package com.esiproject2023.metadataservice.service;
 
-import com.esiproject2023.metadatabackup.model.Metadata;
+import com.esiproject2023.metadataservice.model.Metadata;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

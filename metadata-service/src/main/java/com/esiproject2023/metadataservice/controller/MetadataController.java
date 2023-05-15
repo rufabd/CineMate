@@ -1,12 +1,11 @@
-package com.esiproject2023.metadatabackup.controller;
+package com.esiproject2023.metadataservice.controller;
 
-import com.esiproject2023.metadatabackup.model.Metadata;
-import com.esiproject2023.metadatabackup.service.MetadataService;
+import com.esiproject2023.metadataservice.model.Metadata;
+import com.esiproject2023.metadataservice.service.MetadataService;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j

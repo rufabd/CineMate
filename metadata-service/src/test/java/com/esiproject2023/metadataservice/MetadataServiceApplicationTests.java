@@ -1,4 +1,4 @@
-package com.esiproject2023.metadatabackup;
+package com.esiproject2023.metadataservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

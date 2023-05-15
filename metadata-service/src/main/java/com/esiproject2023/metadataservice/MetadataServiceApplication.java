@@ -1,4 +1,4 @@
-package com.esiproject2023.metadatabackup;
+package com.esiproject2023.metadataservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
