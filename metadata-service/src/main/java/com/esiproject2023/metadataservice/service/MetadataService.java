@@ -88,7 +88,7 @@ public class MetadataService {
         for (String ID : ids.split(",")) {
             if (!ID.equals("")) {
                 if (params.length() > 0) {
-                    params.append("%2C");
+                    params.append(",");
                 }
                 params.append(ID);
             }

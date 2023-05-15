@@ -1,6 +1,7 @@
 package com.esi2023.project.navigatorservice.service;
 
 
+import com.esi2023.project.navigatorservice.model.Metadata;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,11 @@ public class NavigatorService {
 
     public String getRequest(String path) {
         try {
-            return webClient.build().get().uri("http://metadata-service/metadata/" + path).retrieve().bodyToMono(String.class).block();
+            return webClient.build().get().uri(("http://metadata-service/metadata/" + path)).retrieve().bodyToMono(String.class).block();
 
         } catch (Exception e) {
             try {
-                return webClient.build().get().uri("http://backup-service/backup/get/" + path).retrieve().bodyToMono(String.class).block();
+                return webClient.build().get().uri(("http://backup-service/backup/get/" + path)).retrieve().bodyToMono(String.class).block();
 
             } catch (Exception x) {
                 throw new RuntimeException("BOTH API AND BACKUP NOT WORKING");
@@ -28,13 +29,26 @@ public class NavigatorService {
         }
     }
 
-    public String searchByParams(String path, String params) {
+    public Metadata[] searchByParams(String path, String params) {
         try {
-            return webClient.build().get().uri("http://metadata-service/metadata/" + path + "/{params}", params).retrieve().bodyToMono(String.class).block();
+            return webClient.build().get().uri(("http://metadata-service/metadata/" + path + "/{params}"), params).retrieve().bodyToMono(Metadata[].class).block();
 
         } catch (Exception e) {
             try {
-                return webClient.build().get().uri("http://backup-service/backup/get/" + path + "-" + params).retrieve().bodyToMono(String.class).block();
+                return webClient.build().get().uri(("http://backup-service/backup/get/" + path + "-" + params)).retrieve().bodyToMono(Metadata[].class).block();
+
+            } catch (Exception x) {
+                throw new RuntimeException("BOTH API AND BACKUP NOT WORKING");
+            }
+        }
+    }
+    public String searchByID(String path, String params) {
+        try {
+            return webClient.build().get().uri(("http://metadata-service/metadata/" + path + "/{params}"), params).retrieve().bodyToMono(String.class).block();
+
+        } catch (Exception e) {
+            try {
+                return webClient.build().get().uri(("http://backup-service/backup/get/" + path + "-" + params)).retrieve().bodyToMono(String.class).block();
 
             } catch (Exception x) {
                 throw new RuntimeException("BOTH API AND BACKUP NOT WORKING");
