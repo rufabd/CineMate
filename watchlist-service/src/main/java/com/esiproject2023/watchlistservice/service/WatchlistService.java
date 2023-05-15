@@ -64,7 +64,7 @@ public class WatchlistService {
             contentIds.append(watchlistItem.getContentId()).append(",");
         }
         if(watchlistItems.size() == 0) return new ArrayList<>();
-        MetadataResponse[] result = webClient.build().get().uri("http://backup-service/navigator/searchByIDs/{params}", contentIds.substring(0, contentIds.length()-1)).retrieve().bodyToMono(MetadataResponse[].class).block();
+        MetadataResponse[] result = webClient.build().get().uri("http://navigator-service/navigator/searchByIDs/{params}", contentIds.substring(0, contentIds.length()-1)).retrieve().bodyToMono(MetadataResponse[].class).block();
         if(result != null) return List.of(result);
         else return new ArrayList<>();
 //        return List.of(result);

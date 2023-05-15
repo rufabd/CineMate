@@ -31,7 +31,7 @@ public class DiscoveryService {
 
         String processedSearch = ("AKA" + movieTitle + "?exact=false&" + createConfig(titleType, genre, list, sort, year, endYear, startYear, page,0));
 
-        String response = webClient.build().get().uri("http://backup-service/navigator/searchByParams/{params}", processedSearch).retrieve().bodyToMono(String.class).block();
+        String response = webClient.build().get().uri("http://navigator-service/navigator/searchByParams/{params}", processedSearch).retrieve().bodyToMono(String.class).block();
 
         Gson gson = new Gson();
         return gson.fromJson(response, Content[].class);
@@ -46,8 +46,8 @@ public class DiscoveryService {
         String top_rated_250 = createConfig("", favGenre, "top_rated_250", "", "", "", "", "",30);
         String top_rated_series_250 = createConfig("", favGenre, "top_rated_series_250", "", "", "", "", "",30);
 
-        String response1 = webClient.build().get().uri("http://backup-service/navigator/searchByParams/{params}", top_rated_250).retrieve().bodyToMono(String.class).block();
-        String response2 = webClient.build().get().uri("http://backup-service/navigator/searchByParams/{params}", top_rated_series_250).retrieve().bodyToMono(String.class).block();
+        String response1 = webClient.build().get().uri("http://navigator-service/navigator/searchByParams/{params}", top_rated_250).retrieve().bodyToMono(String.class).block();
+        String response2 = webClient.build().get().uri("http://navigator-service/navigator/searchByParams/{params}", top_rated_series_250).retrieve().bodyToMono(String.class).block();
 
         Gson gson = new Gson();
         List<Content> content1 = Arrays.asList(gson.fromJson(response1, Content[].class));
