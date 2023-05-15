@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -67,6 +68,7 @@ public class UserProfileService {
         else return List.of();
     }
 
+    @Scheduled(cron = "0 0 8 * * *")
     public void sendEmailsToUsers() {
         List<List<UserProfile>> wholeList = new ArrayList<>();
         wholeList.add(getUsersDaily());
@@ -100,33 +102,6 @@ public class UserProfileService {
                 }
             }
         }
-//        List<UserProfile> finalListDaily = getUsersDaily();
-//        for (UserProfile userProfile : finalListDaily) {
-//            DiscoveryRequest discoveryRequest = new DiscoveryRequest(userProfile.dob(), userProfile.favGenre(), userProfile.minRating());
-//            Content[] content = webClient.build().get().uri("http://discovery-service/discovery/{params}", discoveryRequest.getDob()+","+discoveryRequest
-//                    .getGenre()+","+discoveryRequest.getRating()).retrieve().bodyToMono(Content[].class).block();
-//            if (content != null) {
-////                    Send email here
-//                String emailType;
-//                if(userProfile.emailPreferences().equals("daily")) emailType = "discoveryDaily";
-//                else emailType = "discovery";
-//                EmailRequest emailRequest = new EmailRequest(
-//                        userProfile.email(),
-//                        "Hello, dear user and subscriber!\n", "Your daily content recommendation",
-//                        "\nYour daily content recommendation is here! For your taste, we recommend you to check " + content[0].title() + ".\n" +
-//                                "\n" + content[0].description() + "\n\n" +
-//                                "The cast includes popular actors and actresses like " + content[0].cast() + "\n\n" +
-//                                content[0].poster() +
-//                                "\n\nGenre: " + content[0].genre() + "\n\n" +
-//                                "Rating: " + content[0].rating() + "\n" +
-//                                "Director: " + content[0].director() + "\n" +
-//                                "Release date: " + content[0].release_date() + "\n\n" +
-//                                "Thank you very much for subscribing to our newsletter. We always try to develop our platform, so thank you very much for supporting us!" + "\n\n" +
-//                                "We wish you to have a nice day!" +
-//                                "\n\n" + "Sincerely,\n" + "Rufat Abdullayev | Team CineMate", emailType);
-//                kafkaTemplate.send("discoveryTopic", emailRequest);
-//            }
-//        }
     }
 
     public boolean dateChecker(String lastEmailSent, int daysShouldBePassed) throws ParseException {
