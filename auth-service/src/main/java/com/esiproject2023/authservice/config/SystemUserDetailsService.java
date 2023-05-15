@@ -24,12 +24,4 @@ public class SystemUserDetailsService implements UserDetailsService {
         return user.map(SystemUserDetails::new).get();
     }
 
-    public Long getUserIdByUsername(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with username: " + username);
-        }
-        return user.get().getId();
-    }
-
 }
