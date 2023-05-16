@@ -48,7 +48,7 @@ public class ReviewController {
         return reviewService.getReviewsForSpecificContent(contentId);
     }
     @PostMapping("/get/rating")
-    public Double updateUserProfile(@RequestBody String contentId) {
-        return reviewService.averageRating(contentId);
-    }
+    public String updateUserProfile(@RequestBody String request) {
+        return reviewService.averageRating(request);
+    };
 }

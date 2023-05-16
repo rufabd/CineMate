@@ -46,7 +46,7 @@ public class MetadataService {
         } else if(params.equals("/utils/genres")) {
             restUrl.append(params);
         } else restUrl.append("?").append(params);
-
+        log.info("HERE IS INFO" + restUrl);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(restUrl.toString()))
                 .header("content-type", contentType)
@@ -124,6 +124,13 @@ public class MetadataService {
 
         if (!response.contains("API is unreachable") && !response.contains("You are not subscribed to this API.")) {
             log.info(response);
+
+            if(JsonParser.parseString(response).getAsJsonObject().get("results").isJsonNull()) {
+                obj.put("response", gson.toJson(new Metadata[0]));
+                kafkaTemplate.send("backupRequest", obj);
+                return new Metadata[0];
+            }
+
             JsonArray results = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray("results");
             List<Metadata> metadataList = new ArrayList<>();
 
@@ -181,7 +188,9 @@ public class MetadataService {
                 String releaseDate;
                 if (dateExist) {
                     JsonObject date = result.getAsJsonObject("releaseDate");
-                    releaseDate = date.get("day") + "-" + date.get("month") + "-" + date.get("year");
+                    String day = ("0" + date.get("day")).substring(("0" + date.get("day")).length() - 2);
+                    String month = ("0" + date.get("month")).substring(("0" + date.get("month")).length() - 2);
+                    releaseDate = day + "-" + month + "-" + date.get("year");
                 } else {
                     releaseDate = "not found";
                 }
@@ -219,17 +228,13 @@ public class MetadataService {
                 kafkaTemplate.send("backupRequest", obj);
                 return new ArrayList<>();
             }
-            log.info("Passed null conditions: " + results);
 
             for (int i = 0; i < results.size(); i++) {
                 if(!results.get(i).isJsonNull()) {
-                    log.info("here it comes");
                     String result = results.get(i).getAsJsonPrimitive().getAsString();
-                    log.info("here it comes" + result);
                     if (!checkList.contains(result)) genres.add(result);
                 }
             }
-            log.info("Entered loop null conditions: " + genres);
 
             obj.put("response", gson.toJson(genres));
             kafkaTemplate.send("backupRequest", obj);

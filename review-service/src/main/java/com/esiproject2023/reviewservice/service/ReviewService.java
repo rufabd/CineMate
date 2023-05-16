@@ -6,6 +6,7 @@ import com.esiproject2023.reviewservice.dto.ReviewDto;
 import com.esiproject2023.reviewservice.dto.UserResponse;
 import com.esiproject2023.reviewservice.model.Review;
 import com.esiproject2023.reviewservice.repository.ReviewRepository;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -79,7 +81,7 @@ public class ReviewService {
         return review.map(this::mapToReviewDto);
     }
 
-    public List<Review> getReviewsForSpecificContent(String contentId) {
+    public List<Review> getReviewsForSpecificContent(Object contentId) {
         return reviewRepository.findByContentId(contentId);
     }
 
@@ -115,13 +117,20 @@ public class ReviewService {
         return "Fail";
     }
 
-    public Double averageRating(String contentId) {
+    public String averageRating(String contentId) {
+        Gson gson = new Gson();
+
+        Map map = gson.fromJson(contentId, Map.class);
         double averageRating = 0.0;
-        List<Review> listOfReviewsForContent = reviewRepository.findByContentId(contentId);
+        List<Review> listOfReviewsForContent = getReviewsForSpecificContent(map.get("contentId"));
+        double size = listOfReviewsForContent.size();
+        log.info("CHECK NOW:" + map.get("contentId"));
         for(Review review : listOfReviewsForContent) {
             averageRating += review.getScore();
         }
-        return averageRating/listOfReviewsForContent.size();
+        if(listOfReviewsForContent.size() == 0) return "No ratings yet";
+        double avg = averageRating/size;
+        return String.format("%.2f", avg).replace(",",".");
     }
 
 }

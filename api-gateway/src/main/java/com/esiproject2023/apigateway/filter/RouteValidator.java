@@ -19,7 +19,6 @@ public class RouteValidator {
             "auth/register",
             "auth/login",
             "auth/{username}",
-            "review/content/{contentId}",
             "auth/emailPreferences",
             "auth/update/lastEmail",
             "auth/update/profile"
